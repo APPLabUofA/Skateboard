@@ -36,7 +36,7 @@ for i_sub = 1:nsubs
         EEG = pop_loadbv(Pathname, Filename);
                       
         % get electrode locations
-        EEG=pop_chanedit(EEG, 'load',{'M:\Analysis\Electrodelocs\Vamp_EOG_electrode_locs.ced' 'filetype' 'autodetect'});
+        EEG=pop_chanedit(EEG, 'load',{'M:\Analysis\Skateboard\Skate_Vamp_Active_16.ced' 'filetype' 'autodetect'});
         
         % arithmetically rereference to linked mastoid
         for x=1:EEG.nbchan-2
