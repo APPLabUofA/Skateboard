@@ -6,8 +6,8 @@
 ccc
 %
 exp = 'Skateboard';
-%subs = {'100' '101' '102'};
-subs = {'100'}; %to test on just one sub 
+subs = {'100' '101' '102' '103'};
+%subs = {'100'}; %to test on just one sub 
 
 nsubs = length(subs); 
 conds =  {'P_CW';'P_CCW'; 'NP_CW'; 'NP_CCW'};
