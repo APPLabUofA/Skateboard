@@ -1,0 +1,11 @@
+S3 is for the standard tones
+S5 are the target tones
+S9 is the trigger when participants accurately respond to the target
+S7 is the trigger when participants incorrectly respond to the standards.
+
+
+S41 is the trigger for the start of the countdown
+S61 is the trigger for the start of the task itself
+S511 is the explosion sound at the end of the task
+
+
