@@ -5,12 +5,12 @@ did electrodes fall off, were no triggers recorded, etc.
 Subjects:
 
 subs = {
-'100'  - no alpha
-'101'  - no alpha
-'102'  - no alpha
+'100'  - no alpha (Nathan) - no handedness/footnedness data (BUT EASY TO GET)
+'101'  - no alpha (alex) - no handedness/footnedness data (BUT EASY TO GET)
+'102'  - no alpha (pete) - no handedness/footnedness data (BUT EASY TO GET)
 '103'  - no eyes open alpha
 '104' 
-'105'  - No Triggers
+'105'  - No Triggers (will ask sub to return)
 '106' 
 '107' 
 '108' 
