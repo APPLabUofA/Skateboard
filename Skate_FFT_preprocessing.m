@@ -4,28 +4,34 @@
 % Then subtract the spectra for left and right side of the head
 % Then average those over epochs
 % 
-% If you start making a script to load in the preprocessed .set files,...
-...and indicate where these steps should go, I can help with writing a draft of a script to run this analysis
-    
+
 %%
 clear all
 close all
 ccc
 
 exp = 'Skateboard';
-%subs = {'100' '101' '102' '103' '104' '106' '107' '108' '109' '110' '111'...
-...'112' '113' '114' '115' '016'};
+subs = {'100' '101' '102' '103' '104' '106' '107' '108' '109' '110' '111'...
+    '112' '113' '114' '115' '116' '117' };
+
 subs = {'117'}; %to test on just one sub
 
 nsubs = length(subs);
 conds = {'P_CW';'P_CCW'; 'NP_CW'; 'NP_CCW'};%preferred, clockwise - non-preffered, CCW
-%conds = {'G1'; 'G2';'R1';'R2'};
 nconds = length(conds);
+
+% Marker Numbers
+nStandard = 3;
+nTarget = 5;
+nFalseAlarm = 7;
+nCorrectResponse = 9;
+
 Pathname = 'M:\Data\Skateboard\winter2019\';
 
-if exist([Pathname 'segments\'])
+if ~exist([Pathname 'segmentsFFT\'])
     mkdir([Pathname 'segmentsFFT\']);
 end
+
 [ALLEEG EEG CURRENTSET ALLCOM] = eeglab;
 
 for i_sub = 1:nsubs
@@ -54,20 +60,16 @@ for i_sub = 1:nsubs
             EEG.event(i_event).type = num2str(str2num((EEG.event(i_event).type(2:end))));
         end
         
-        %epoch 
-               
-        EEG = pop_epoch( EEG, {  '3'  '5'  }, [-1  2], 'newname',  sprintf('%s epochs' , setname), 'epochinfo', 'yes'); %Changed from [-.2 1] to [-1 2]. DR
+        %epoch    
+        EEG = pop_epoch( EEG, {  num2str(nStandard)  num2str(nTarget)  }, [-1  2], 'newname',  sprintf('%s epochs' , setname), 'epochinfo', 'yes'); %Changed from [-.2 1] to [-1 2]. DR
         EEG = pop_rmbase( EEG, [-200    0]);
-        
-        %         eeglab redraw
-             
         
         %    Artifact rejection, trials with range >500 uV
         EEG = pop_eegthresh(EEG,1,[1:size(EEG.data,1)],-1000,1000,EEG.xmin,EEG.xmax,0,1);
         
         %   EMCP occular correction
         temp_ocular = EEG.data(end-1:end,:,:); %to save the EYE data for after
-        selection_cards = {'3','5' }; %different bin names, each condition should be separate
+        selection_cards = {num2str(nStandard),num2str(nTarget) }; %different bin names, each condition should be separate
         EEG = gratton_emcp(EEG,selection_cards,{'VEOG'},{'HEOG'}); %this assumes the eye channels are called this
         EEG.emcp.table %this prints out the regression coefficients
         EEG.data(end-1:end,:,:) = temp_ocular; %replace the eye data
@@ -77,14 +79,12 @@ for i_sub = 1:nsubs
         
         tempEEG =   EEG;
         
-        
         %now select the corrected trials
-        EEG = pop_selectevent( tempEEG, 'type',5,'renametype','Target','deleteevents','on','deleteepochs','on','invertepochs','off');
+        EEG = pop_selectevent( tempEEG, 'type',nTarget,'renametype','Target','deleteevents','on','deleteepochs','on','invertepochs','off');
         EEG = pop_editset(EEG, 'setname',[subs{i_sub} '_' exp '_' conds{i_cond} '_Corrected_Target']);
         EEG = pop_saveset( EEG, 'filename',[subs{i_sub} '_' exp '_' conds{i_cond} '_Corrected_Target.set'],'filepath',[Pathname 'segmentsFFT\']);
         
-        
-        EEG = pop_selectevent( tempEEG, 'type',3 ,'renametype','Standard','deleteevents','on','deleteepochs','on','invertepochs','off');
+        EEG = pop_selectevent( tempEEG, 'type',nStandard ,'renametype','Standard','deleteevents','on','deleteepochs','on','invertepochs','off');
         EEG = pop_editset(EEG, 'setname',[subs{i_sub} '_' exp '_' conds{i_cond} '_Corrected_Standard']);
         EEG = pop_saveset( EEG, 'filename',[subs{i_sub} '_' exp '_' conds{i_cond} '_Corrected_Standard.set'],'filepath',[Pathname 'segmentsFFT\']);
         
