@@ -35,8 +35,8 @@ eeglab redraw
 %9:10  --> P3:P4
 %11:12 --> O1:O2
 
-left_electrode = 1
-right_electrode = 2
+left_electrode = 5
+right_electrode = 6
 
 wavenumber = 12; %wavelet cycles
 freqs = [1:1:30]; %wavelet frequencies
