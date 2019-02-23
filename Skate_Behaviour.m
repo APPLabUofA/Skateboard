@@ -149,8 +149,41 @@ for i_sub = 1:nsubs
     end 
 end 
 
-
+%this the grand mean over subjects of the median RTs
 grand_mean_RT_Corr = mean(medianRT_correct)
-grand_mean_RT_FA = nanmean(medianRT_falseAlarm)
-grand_prop_corr = mean(prop_correct)
-grant_prop_corrRej = mean(prop_correctRej)
+%these are normal error bars (Standard Error)
+grand_SE_RT_Corr = std(medianRT_correct)/sqrt(nsubs)
+%these are smaller within subject error bars 
+%made by subtracting away each subjects average
+%from their other scores to remove between subject difference
+sub_mean_RT_Corr = mean(medianRT_correct,2); %average for each subject
+%this subtracts each subjects average from their scores
+%repmat repeats the matrix 4 times for each condition
+mean_RT_Corr_deviation = medianRT_correct - repmat(sub_mean_RT_Corr,1,4);
+%then take the standard error of those deviatoins from the mean
+grand_withinSE_RT_Corr = std(mean_RT_Corr_deviation)/sqrt(nsubs)
+
+
+%now do the same for proportion correct
+grand_mean_prop_corr = mean(prop_correct);
+grand_SE_prop_corr = std(prop_correct)/sqrt(nsubs);
+sub_mean_prop_corr = mean(prop_cosrrect,2);
+prop_corr_deviation = prop_correct - repmat(sub_mean_prop_corr,1,4);
+grand_withinSE_prop_corr = std(prop_corr_deviation)/sqrt(nsubs);
+
+%plot it
+conds_plot = {'Pref-CW';'Pref-CCW'; 'NotPref-CW'; 'NotPref-CCW'};
+figure;
+set(gcf,'color','w');
+set(gcf, 'Position',  [100, 500, 1000, 400])
+subplot(1,2,1)
+    barweb(grand_mean_RT_Corr,grand_withinSE_RT_Corr);
+    ylim([450 500])
+    ylabel('Median RT (ms)')
+    title('Target Reaction Time (w/i subject SE)')
+    legend(conds_plot)
+subplot(1,2,2)
+    barweb(grand_mean_prop_corr,grand_withinSE_prop_corr);
+    ylim([.9 1])
+    ylabel('Proportion')
+    title('Proportion of Targets responded to')
