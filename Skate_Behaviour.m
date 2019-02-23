@@ -167,7 +167,7 @@ grand_withinSE_RT_Corr = std(mean_RT_Corr_deviation)/sqrt(nsubs)
 %now do the same for proportion correct
 grand_mean_prop_corr = mean(prop_correct);
 grand_SE_prop_corr = std(prop_correct)/sqrt(nsubs);
-sub_mean_prop_corr = mean(prop_cosrrect,2);
+sub_mean_prop_corr = mean(prop_correct,2);
 prop_corr_deviation = prop_correct - repmat(sub_mean_prop_corr,1,4);
 grand_withinSE_prop_corr = std(prop_corr_deviation)/sqrt(nsubs);
 
