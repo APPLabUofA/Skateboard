@@ -1,0 +1,42 @@
+Subject Notes
+
+Use this text file to indicate if anything is different about any of the subjects
+did electrodes fall off, were no triggers recorded, etc.
+Subjects:
+
+subs = {
+'100'  - no alpha
+'101'  - no alpha
+'102'  - no alpha
+'103'  - no eyes open alpha
+'104' 
+'105'  - No Triggers
+'106' 
+'107' 
+'108' 
+'109' 
+'110' 
+'111'
+'112' 
+'113' 
+'114' 
+'115' 
+'116' 
+'117'
+};
+
+subs = {
+'104' 
+'106' 
+'107' 
+'108' 
+'109' 
+'110' 
+'111'
+'112' 
+'113' 
+'114' 
+'115' 
+'116' 
+'117'
+};
