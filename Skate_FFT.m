@@ -35,8 +35,8 @@ eeglab redraw
 %9:10  --> P3:P4
 %11:12 --> O1:O2
 
-left_electrode = 5
-right_electrode = 6
+left_electrode = 1
+right_electrode = 2
 
 wavenumber = 12; %wavelet cycles
 freqs = [1:1:30]; %wavelet frequencies
@@ -93,44 +93,28 @@ ylabel('Frequency (Hz)');
 
 %% Collapse over time to get power spectra, average over subjects
 
-power_spectra = squeeze(mean(power_out(:,:,:,:,:),2)); %collapse over time can pick time range here in 2nd dim.
-power_spectra_std = squeeze(std(power_out(:,:,:,:,:),[],2)); 
 
-if nsubs > 1 % if you have more than one subject take the mean over subjects
-    mean_power_out = squeeze(mean(power_spectra,3));
-    stderr_power_out = squeeze(std(power_out,[],3))./sqrt(nsubs);
-    
-else %if only one subject just plot mean and std over trials
-    
-    mean_power_out = power_spectra;
-    stderr_power_out = power_spectra_std;
-end
+power_spectra = squeeze(mean(power_out,2)); %collapse over time can pick time range here in 2nd dim.
+%frequency x electrode x subject x condition
+
+power_spectra_diff = squeeze( power_spectra(:,left_electrode,:,:)-...
+                            power_spectra(:,right_electrode,:,:));
+
+power_spectra_diff_mean = squeeze(mean(power_spectra_diff,2));
+power_spectra_diff_se = squeeze(std(power_spectra_diff,[],2)/sqrt(nsubs));
 
 %% Plot spectra accross conditions
 figure;
-boundedline(freqs,...
-    mean_power_out(:,left_electrode,1),...
-    stderr_power_out(:,left_electrode,1), 'b', ...
-    freqs,mean_power_out(:,left_electrode,2),...
-    stderr_power_out(:,left_electrode,2), 'g', ...
-    freqs,mean_power_out(:,left_electrode,3),...
-    stderr_power_out(:,left_electrode,3), 'r', ...
-    freqs,mean_power_out(:,left_electrode,4),...
-    stderr_power_out(:,left_electrode,4), 'k', ...
-    freqs,mean_power_out(:,right_electrode,1),...
-    stderr_power_out(:,right_electrode,1), 'b--', ...
-    freqs,mean_power_out(:,right_electrode,2),...
-    stderr_power_out(:,right_electrode,2), 'g--', ...
-    freqs,mean_power_out(:,right_electrode,3),...
-    stderr_power_out(:,right_electrode,3), 'r--', ...
-    freqs,mean_power_out(:,right_electrode,4),...
-    stderr_power_out(:,right_electrode,4), 'k--');
+boundedline(freqs,power_spectra_diff_mean(:,1),power_spectra_diff_se(:,1),'r',...
+            freqs,power_spectra_diff_mean(:,2),power_spectra_diff_se(:,2),'b',...
+            freqs,power_spectra_diff_mean(:,3),power_spectra_diff_se(:,3),'g',...
+            freqs,power_spectra_diff_mean(:,4),power_spectra_diff_se(:,4)),'r';
 axis tight
 xlim([0 30])
 
 xlabel('Frequency (Hz)');
 ylabel('Power (uV^2)');
-title('Baseline power Standard Trials Electrode (right --)');
+title('Power (Left - Right)');
 legend(conds_lab,'Location','NorthEast');
 
 
