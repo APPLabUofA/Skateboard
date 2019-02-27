@@ -5,7 +5,7 @@ ccc
 exp = 'Skateboard';
 %subs = {'100' '101' '102' '103' '104' '106' '107' '108' '109' '110' '111'...
 ...'112' '113' '114' '115' '116' '117' '118'};
-subs = {'118'}; %to test on just one sub
+subs = {'119' '120'}; %to test on just one sub
 
 nsubs = length(subs);
 conds = {'P_CW';'P_CCW'; 'NP_CW'; 'NP_CCW'};%preferred, clockwise - non-preffered, CCW
