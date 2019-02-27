@@ -6,7 +6,8 @@
 ccc
 %
 exp = 'Skateboard';
-subs = {'100' '101' '102' '103'};
+subs = {'100' '101' '102' '103' '104' '106' '107' '108' '109' ...
+    '110' '111' '112' '113' '114' '115' '116' '117' '118' '119' '120'};
 %subs = {'100'}; %to test on just one sub 
 
 nsubs = length(subs); 
@@ -68,7 +69,7 @@ for i_cond = 1:nconds
         if i_cond == 2
             legend({'Targets', 'Standards'},'Location','SouthEast');
         end
-        axis tight; ylim([-10 10]);
+        axis tight; ylim([-8 12]);
         line([-200 1000],[0 0],'color','k');
         line([0 0],[-2.5 8],'color','k');
         title(conds_lab{i_cond});
@@ -82,7 +83,7 @@ for i_cond = 1:nconds
         if i_cond == 2
             legend('Targets-Standards','Location','SouthEast'); 
         end
-        axis tight; ylim([-10 10]);
+        axis tight; ylim([-8 12]);
         line([-200 1000],[0 0],'color','k');
         line([0 0],[-2.5 8],'color','k');
         title(conds_lab{i_cond});
@@ -109,7 +110,7 @@ subplot(1,3,1)
         
         legend(conds_lab,'Location','SouthEast'); 
        
-        axis tight; ylim([-10 15]);
+        axis tight; ylim([-8 12]);
         line([-200 1000],[0 0],'color','k');
         line([0 0],[-10 15],'color','k');
         title('Difference Wave, Pz');
@@ -131,7 +132,7 @@ subplot(1,3,2)
         
         legend(conds_lab,'Location','SouthEast'); 
        
-        axis tight; ylim([-10 15]);
+        axis tight; ylim([-8 12]);
         line([-200 1000],[0 0],'color','k');
         line([0 0],[-10 15],'color','k');
         title('Targets, Pz');
