@@ -23,6 +23,9 @@ subs = {
 '115' 
 '116' 
 '117'
+'118'
+'119'
+'120' -data was noisier than usual. spent a lot of time fixing loud channels. really bad ERPs as well. 
 };
 
 subs = {
@@ -39,4 +42,7 @@ subs = {
 '115' 
 '116' 
 '117'
+'118'
+'119'
+'120'
 };
