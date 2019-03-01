@@ -7,7 +7,7 @@ ccc
 %
 exp = 'Skateboard';
  subs = {'100' '102' '103' '104' '106' '108' '109' ...
-     '110' '111' '112' '113' '115' '116' '117' '118' '119'};%excluding the bad subs...
+     '110' '111' '112' '113' '115' '116' '117' '118' '119' '120' '122'};%excluding the bad subs...
  ...kept original sub list below. Feel free to delete if need be. Daniel. 
 
 %  subs = {'100' '101' '102' '103' '104' '106' '107' '108' '109' ...
@@ -62,7 +62,7 @@ for i_cond = 1:nconds
         case 3
             colour = 'r';
         case 4
-            colour = 'k';
+            colour = 'm';
     end
     
     subplot(2,nconds,i_cond);
@@ -71,7 +71,7 @@ for i_cond = 1:nconds
         set(gca,'Color',[1 1 1]);
         set(gca,'YDir','reverse');
         if i_cond == 2
-            legend({'Targets', 'Standards'},'Location','SouthEast');
+            legend('Targets','Standards','Location','NorthEast');
         end
         axis tight; ylim([-8 12]);
         line([-200 1000],[0 0],'color','k');
@@ -85,7 +85,7 @@ for i_cond = 1:nconds
         set(gca,'Color',[1 1 1]);
         set(gca,'YDir','reverse'); 
         if i_cond == 2
-            legend('Targets-Standards','Location','SouthEast'); 
+            legend('Targets-Standards','Location','NorthEast'); 
         end
         axis tight; ylim([-8 12]);
         line([-200 1000],[0 0],'color','k');
@@ -112,7 +112,7 @@ subplot(1,3,1)
         set(gca,'YDir','reverse'); 
 
         
-        legend(conds_lab,'Location','SouthEast'); 
+        legend(conds_lab,'Location','NorthEast'); 
        
         axis tight; ylim([-8 12]);
         line([-200 1000],[0 0],'color','k');
@@ -134,7 +134,7 @@ subplot(1,3,2)
         set(gca,'YDir','reverse'); 
 
         
-        legend(conds_lab,'Location','SouthEast'); 
+        legend(conds_lab,'Location','NorthEast'); 
        
         axis tight; ylim([-8 12]);
         line([-200 1000],[0 0],'color','k');
@@ -153,7 +153,7 @@ subplot(1,3,3)
         set(gca,'YDir','reverse'); 
 
         
-        legend(conds_lab,'Location','SouthEast'); 
+        legend(conds_lab,'Location','Northeast'); 
        
         axis tight; ylim([-10 15]);
         line([-200 1000],[0 0],'color','k');
