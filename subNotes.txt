@@ -19,13 +19,15 @@ subs = {
 '111'
 '112' 
 '113' 
-'114' 
-'115' 
+'114' - First RP student
+'115' - T7 is loud and doesn't wanna get fixed. 
 '116' 
 '117'
-'118'
-'119'
+'118' - P7 is acting out
+'119' - P7 / T7 drifted and were pretty loud 
 '120' -data was noisier than usual. spent a lot of time fixing loud channels. really bad ERPs as well. 
+'121' - P7 drifting again. When preprocessing, one of the conds is left with only 1 trial in one of the conditions. When preprocessed for the FFT it saved the files normally. Error spits during the gratton correction procedure. 
+'122'
 };
 
 subs = {
@@ -45,4 +47,6 @@ subs = {
 '118'
 '119'
 '120'
+'121'
+'122'
 };
