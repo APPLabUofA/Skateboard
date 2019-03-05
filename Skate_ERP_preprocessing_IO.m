@@ -75,19 +75,24 @@ for i_sub = 1:nsubs
         EEG = pop_rmbase( EEG, [-200 0]); %baseline again since this changed it
         EEG = pop_eegthresh(EEG,1,[1:size(EEG.data,1)-2],-200,200,EEG.xmin,EEG.xmax,0,1);
         
-        tempEEG =   EEG;
+        if i_cond ==1
+        tempEEG1 =   EEG;
+        elseif i_cond==2
+        tempEEG2 = EEG;
         
+        tempEEG = pop_mergeset(tempEEG1,tempEEG2,1);
         
         %now select the corrected trials
         EEG = pop_selectevent( tempEEG, 'type',5,'renametype','Target','deleteevents','on','deleteepochs','on','invertepochs','off');
         EEG = pop_editset(EEG, 'setname',[subs{i_sub} '_' exp '_' conds{i_cond} '_Corrected_Target']);
-        EEG = pop_saveset( EEG, 'filename',[subs{i_sub} '_' exp '_' 'facing_in' '_Corrected_Target.set'],'filepath',[Pathname 'segmentsIO\']);
+        EEG = pop_saveset( EEG, 'filename',[subs{i_sub} '_' exp '_facing_in_Corrected_Target.set'],'filepath',[Pathname 'segmentsIO\']);
         
         
         EEG = pop_selectevent( tempEEG, 'type',3 ,'renametype','Standard','deleteevents','on','deleteepochs','on','invertepochs','off');
         EEG = pop_editset(EEG, 'setname',[subs{i_sub} '_' exp '_' conds{i_cond} '_Corrected_Standard']);
-        EEG = pop_saveset( EEG, 'filename',[subs{i_sub} '_' exp '_' 'facing_in' '_Corrected_Standard.set'],'filepath',[Pathname 'segmentsIO\']);
+        EEG = pop_saveset( EEG, 'filename',[subs{i_sub} '_' exp '_facing_in_Corrected_Standard.set'],'filepath',[Pathname 'segmentsIO\']);
         
+        end
         
     end 
 end 
@@ -113,6 +118,8 @@ subs = {'100' '101' '102' '103' '104' '106' '108' '111'...
  nsubs = length(subs);
 %conds = {'P_CW';'P_CCW'; 'NP_CW'; 'NP_CCW'};
 conds =  {'P_CCW';'NP_CW'}; %facing OUTSIDE for regulars
+conds2 = {'facing_out1'; 'facing_out2'};
+
 nconds = length(conds);
 Pathname = 'M:\Data\Skateboard\winter2019\';
 
@@ -171,19 +178,24 @@ for i_sub = 1:nsubs
         EEG = pop_rmbase( EEG, [-200 0]); %baseline again since this changed it
         EEG = pop_eegthresh(EEG,1,[1:size(EEG.data,1)-2],-200,200,EEG.xmin,EEG.xmax,0,1);
         
-        tempEEG =   EEG;
+        if i_cond ==1
+        tempEEG1 =   EEG;
+        elseif i_cond==2
+        tempEEG2 = EEG;
+        
+        tempEEG = pop_mergeset(tempEEG1,tempEEG2,1);
         
         
         %now select the corrected trials
         EEG = pop_selectevent( tempEEG, 'type',5,'renametype','Target','deleteevents','on','deleteepochs','on','invertepochs','off');
         EEG = pop_editset(EEG, 'setname',[subs{i_sub} '_' exp '_' conds{i_cond} '_Corrected_Target']);
-        EEG = pop_saveset( EEG, 'filename',[subs{i_sub} '_' exp '_' 'facing_out' '_Corrected_Target.set'],'filepath',[Pathname 'segmentsIO\']);
+        EEG = pop_saveset( EEG, 'filename',[subs{i_sub} '_' exp '_facing_out_Corrected_Target.set'],'filepath',[Pathname 'segmentsIO\']);
         
         
         EEG = pop_selectevent( tempEEG, 'type',3 ,'renametype','Standard','deleteevents','on','deleteepochs','on','invertepochs','off');
         EEG = pop_editset(EEG, 'setname',[subs{i_sub} '_' exp '_' conds{i_cond} '_Corrected_Standard']);
-        EEG = pop_saveset( EEG, 'filename',[subs{i_sub} '_' exp '_' 'facing_out' '_Corrected_Standard.set'],'filepath',[Pathname 'segmentsIO\']);
-        
+        EEG = pop_saveset( EEG, 'filename',[subs{i_sub} '_' exp '_facing_out_Corrected_Standard.set'],'filepath',[Pathname 'segmentsIO\']);
+        end
         
     end 
 end 
@@ -265,20 +277,24 @@ for i_sub = 1:nsubs
         EEG = pop_rmbase( EEG, [-200 0]); %baseline again since this changed it
         EEG = pop_eegthresh(EEG,1,[1:size(EEG.data,1)-2],-200,200,EEG.xmin,EEG.xmax,0,1);
         
-        tempEEG =   EEG;
+        if i_cond ==1
+        tempEEG1 =   EEG;
+        elseif i_cond==2
+        tempEEG2 = EEG;
         
+        tempEEG = pop_mergeset(tempEEG1,tempEEG2,1);  
         
         %now select the corrected trials
         EEG = pop_selectevent( tempEEG, 'type',5,'renametype','Target','deleteevents','on','deleteepochs','on','invertepochs','off');
         EEG = pop_editset(EEG, 'setname',[subs{i_sub} '_' exp '_' conds{i_cond} '_Corrected_Target']);
-        EEG = pop_saveset( EEG, 'filename',[subs{i_sub} '_' exp '_' 'facing_in' '_Corrected_Target.set'],'filepath',[Pathname 'segmentsIO\']);
+        EEG = pop_saveset( EEG, 'filename',[subs{i_sub} '_' exp '_facing_in_Corrected_Target.set'],'filepath',[Pathname 'segmentsIO\']);
         
         
         EEG = pop_selectevent( tempEEG, 'type',3 ,'renametype','Standard','deleteevents','on','deleteepochs','on','invertepochs','off');
         EEG = pop_editset(EEG, 'setname',[subs{i_sub} '_' exp '_' conds{i_cond} '_Corrected_Standard']);
-        EEG = pop_saveset( EEG, 'filename',[subs{i_sub} '_' exp '_' 'facing_in' '_Corrected_Standard.set'],'filepath',[Pathname 'segmentsIO\']);
+        EEG = pop_saveset( EEG, 'filename',[subs{i_sub} '_' exp '_facing_in_Corrected_Standard.set'],'filepath',[Pathname 'segmentsIO\']);
         
-        
+        end 
     end 
 end 
 commandhistory
@@ -360,19 +376,24 @@ for i_sub = 1:nsubs
         EEG = pop_rmbase( EEG, [-200 0]); %baseline again since this changed it
         EEG = pop_eegthresh(EEG,1,[1:size(EEG.data,1)-2],-200,200,EEG.xmin,EEG.xmax,0,1);
         
-        tempEEG =   EEG;
+        if i_cond ==1
+        tempEEG1 =   EEG;
+        elseif i_cond==2
+        tempEEG2 = EEG;
+        
+        tempEEG = pop_mergeset(tempEEG1,tempEEG2,1);
         
         
         %now select the corrected trials
         EEG = pop_selectevent( tempEEG, 'type',5,'renametype','Target','deleteevents','on','deleteepochs','on','invertepochs','off');
         EEG = pop_editset(EEG, 'setname',[subs{i_sub} '_' exp '_' conds{i_cond} '_Corrected_Target']);
-        EEG = pop_saveset( EEG, 'filename',[subs{i_sub} '_' exp '_' 'facing_out' '_Corrected_Target.set'],'filepath',[Pathname 'segmentsIO\']);
+        EEG = pop_saveset( EEG, 'filename',[subs{i_sub} '_' exp '_facing_out_Corrected_Target.set'],'filepath',[Pathname 'segmentsIO\']);
         
         
         EEG = pop_selectevent( tempEEG, 'type',3 ,'renametype','Standard','deleteevents','on','deleteepochs','on','invertepochs','off');
         EEG = pop_editset(EEG, 'setname',[subs{i_sub} '_' exp '_' conds{i_cond} '_Corrected_Standard']);
-        EEG = pop_saveset( EEG, 'filename',[subs{i_sub} '_' exp '_' 'facing_out' '_Corrected_Standard.set'],'filepath',[Pathname 'segmentsIO\']);
-        
+        EEG = pop_saveset( EEG, 'filename',[subs{i_sub} '_' exp '_facing_out_Corrected_Standard.set'],'filepath',[Pathname 'segmentsIO\']);
+        end
         
     end 
 end 
