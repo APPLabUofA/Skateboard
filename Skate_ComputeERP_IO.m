@@ -52,12 +52,8 @@ for i_cond = 1:nconds
         case 1
             colour = 'b';
         case 2
-            colour = 'g';
-        case 3
             colour = 'r';
-        case 4
-            colour = 'm';
-    end
+        end
     
     subplot(2,nconds,i_cond);
         boundedline(EEG.times,squeeze(mean(erp_out(:,1,electrode,i_cond,:),5)),squeeze(std(erp_out(:,1,electrode,i_cond,:),[],5))./sqrt(nsubs),colour,...
