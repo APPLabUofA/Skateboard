@@ -5,10 +5,22 @@ ccc
 exp = 'Skateboard';
 subs = {'100' '101' '102' '103' '104' '106' '107' '108' '109' '110' '111'...
     '112' '113' '114' '115' '116' '117' '118' '119' '120' '122' };
+is_goofy = [0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1];
+
+% 107 - Goofy
+% 109 - Goofy
+% 110 - Goofy
+% 113 - Goofy
+% 114 - Goofy
+% 115 - Goofy
+% 122 - Goofy
+
 %subs = {'117'}; %to test on just one sub
 
 nsubs = length(subs);
 conds = {'P_CW';'P_CCW'; 'NP_CW'; 'NP_CCW'};
+new_conds = {'FacingIn'; 'FacingOut'}
+
 %preferred, clockwise - non-preffered, CCW
 nconds = length(conds);
 Pathname = 'M:\Data\Skateboard\winter2019\';
@@ -24,14 +36,16 @@ nTarget = 5;
 nFalseAlarm = 7;
 nCorrectResponse = 9;
 
+
+
+
 for i_sub = 1:nsubs
     for i_cond = 1:nconds
-        
+
         Filename = [subs{i_sub} '_' exp '_' conds{i_cond} '.vhdr'];
         setname = Filename(1:end-5);
         
-        EEG = pop_loadbv(Pathname, Filename);
-                    
+        EEG = pop_loadbv(Pathname, Filename); 
 
         %% Find all event types and latencys
 
@@ -141,14 +155,31 @@ for i_sub = 1:nsubs
            end %if target,elseStandard
         end %every event
 
-        prop_correct(i_sub,i_cond) = count_correct / count_targets;
-        prop_correctRej(i_sub,i_cond) = count_correctRej / count_standards;
-        medianRT_correct(i_sub,i_cond) = median(RT_correct);
-        medianRT_falseAlarm(i_sub,i_cond) = median(RT_falseAlarm);
+        %reassign conditions for facing in vs out
+        if is_goofy
+                if strcmp(conds{i_cond},'P_CCW') || strcmp(conds{i_cond},'NP_CW')
+                    new_cond = 1;
+                else
+                    new_cond = 2;
+                end
+        elseif ~is_goofy
+                if strcmp(conds{i_cond},'P_CCW') || strcmp(conds{i_cond},'NP_CW')
+                    new_cond = 2;
+                else
+                    new_cond = 1;
+                end
+        end
+
+        prop_correct(i_sub,new_cond) = count_correct / count_targets;
+        prop_correctRej(i_sub,new_cond) = count_correctRej / count_standards;
+        medianRT_correct(i_sub,new_cond) = median(RT_correct);
+        medianRT_falseAlarm(i_sub,new_cond) = median(RT_falseAlarm);
 
     end 
 end 
 
+
+n_conditions = size(medianRT_correct,2)
 %this the grand mean over subjects of the median RTs
 grand_mean_RT_Corr = mean(medianRT_correct)
 %these are normal error bars (Standard Error)
@@ -159,7 +190,7 @@ grand_SE_RT_Corr = std(medianRT_correct)/sqrt(nsubs)
 sub_mean_RT_Corr = mean(medianRT_correct,2); %average for each subject
 %this subtracts each subjects average from their scores
 %repmat repeats the matrix 4 times for each condition
-mean_RT_Corr_deviation = medianRT_correct - repmat(sub_mean_RT_Corr,1,4);
+mean_RT_Corr_deviation = medianRT_correct - repmat(sub_mean_RT_Corr,1,n_conditions);
 %then take the standard error of those deviatoins from the mean
 grand_withinSE_RT_Corr = std(mean_RT_Corr_deviation)/sqrt(nsubs)
 
@@ -168,11 +199,11 @@ grand_withinSE_RT_Corr = std(mean_RT_Corr_deviation)/sqrt(nsubs)
 grand_mean_prop_corr = mean(prop_correct);
 grand_SE_prop_corr = std(prop_correct)/sqrt(nsubs);
 sub_mean_prop_corr = mean(prop_correct,2);
-prop_corr_deviation = prop_correct - repmat(sub_mean_prop_corr,1,4);
+prop_corr_deviation = prop_correct - repmat(sub_mean_prop_corr,1,n_conditions);
 grand_withinSE_prop_corr = std(prop_corr_deviation)/sqrt(nsubs);
 
 %plot it
-conds_plot = {'Pref-CW';'Pref-CCW'; 'NotPref-CW'; 'NotPref-CCW'};
+conds_plot = {'FacingIn'; 'FacingOut'};
 figure;
 set(gcf,'color','w');
 set(gcf, 'Position',  [100, 500, 1000, 400])
