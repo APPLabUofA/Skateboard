@@ -10,7 +10,7 @@ exp = 'Skateboard';
      '110' '111' '112' '113' '114' '115' '116' '117' '118' '119' '120' '122'}; 
 
 nsubs = length(subs); 
-conds =  {'facing_in';'facing_out'};
+conds =  {'facing_In';'facing_Out'};
 conds_lab = {'Facing Inside Track'; 'Facing Outside Track'};
 nconds = length(conds);
 Pathname = 'M:\Data\Skateboard\Winter2019\'; %M:\Data\Skateboard\Winter2019
@@ -21,9 +21,9 @@ for i_sub = 1:nsubs
     for i_cond = 1:nconds
         
         Filename = [subs{i_sub} '_' exp '_' conds{i_cond}];
-        EEG = pop_loadset('filename',[Filename '_Corrected_Target.set'],'filepath','M:\Data\Skateboard\Winter2019\segmentsIO\');
+        EEG = pop_loadset('filename',[Filename '_Corrected_Target.set'],'filepath','M:\Data\Skateboard\Winter2019\segments_IO_V2\');
         [ALLEEG, EEG, CURRENTSET] = eeg_store( ALLEEG, EEG, 0 );
-        EEG = pop_loadset('filename',[Filename '_Corrected_Standard.set'],'filepath','M:\Data\Skateboard\Winter2019\segmentsIO\');
+        EEG = pop_loadset('filename',[Filename '_Corrected_Standard.set'],'filepath','M:\Data\Skateboard\Winter2019\segments_IO_V2\');
         [ALLEEG, EEG, CURRENTSET] = eeg_store( ALLEEG, EEG, 0 );
 
 
