@@ -4,8 +4,8 @@ ccc
 
 exp = 'Skateboard';
 subs = {'100' '101' '102' '103' '104' '106' '107' '108' '109' '110' '111'...
-    '112' '113' '114' '115' '116' '117' '118' '119' '120' '122'};
-is_goofy = [0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1];
+    '112' '113' '114' '115' '116' '117' '118' '119' '120' '122' '123' '124' '125'};
+is_goofy = [0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0];
 %subs = {'100'}; %to test on just one sub
 
 nsubs = length(subs);
@@ -36,8 +36,8 @@ for i_sub = 1:nsubs
         end
         
         %         %Filter the data with low pass of 30
-        %                EEG = pop_eegfilt( EEG, .1, 0, [], 0);  %high pass filter
-        %                EEG = pop_eegfilt( EEG, 0, 30, [], 0);  %low pass filter
+        EEG = pop_eegfilt( EEG, .1, 0, [], 0);  %high pass filter
+        EEG = pop_eegfilt( EEG, 0, 30, [], 0);  %low pass filter
         
         
         all_events = length(EEG.event)
