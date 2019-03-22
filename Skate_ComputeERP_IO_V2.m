@@ -7,7 +7,8 @@ ccc
 %
 exp = 'Skateboard';
  subs = {'100' '101' '102' '103' '104' '106' '107' '108' '109' ...
-     '110' '111' '112' '113' '114' '115' '116' '117' '118' '119' '120' '122'}; 
+     '110' '111' '112' '113' '114' '115' '116' '117' '118' '119' ...
+     '120' '122' '123' '124' '125' '126'}; 
 
 nsubs = length(subs); 
 conds =  {'facing_In';'facing_Out'};
@@ -221,7 +222,7 @@ for i_cond = 1:nconds
        set(gca,'Color',[1 1 1]);
         temp = mean(mean(erp_diff_out(time_window,:,i_cond,:),4),1)';
         temp(16:18) = NaN;
-        topoplot(temp,'M:\Analysis\VR_P3\BrainAMP_EOG_VR.ced', 'whitebk','on','plotrad',.6,'maplimits',[-4 4]  )
+        topoplot(temp,'M:\Analysis\Skateboard\Skate_Vamp_Active_16.ced', 'whitebk','on','plotrad',.6,'maplimits',[-4 4]  )
         title(conds_lab{i_cond});
         t = colorbar('peer',gca);
         set(get(t,'ylabel'),'String', 'Voltage Difference (uV)');
