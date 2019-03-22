@@ -28,6 +28,11 @@ subs = {
 '120' -data was noisier than usual. spent a lot of time fixing loud channels. really bad ERPs as well. 
 '121' - P7 drifting again. When preprocessing, one of the conds is left with only 1 trial in one of the conditions. When preprocessed for the FFT it saved the files normally. Error spits during the gratton correction procedure. 
 '122'
+'123' - last subject matching the rest of the triggers from the rest of the sample
+'124' - different triggers (info on markerinfo.txt)
+'125' - different triggers (info on markerinfo.txt)
+'126' - different triggers (info on markerinfo.txt)
+'127' - different triggers (info on markerinfo.txt)
 };
 
 subs = {
@@ -49,4 +54,9 @@ subs = {
 '120'
 '121'
 '122'
+'123'
+'124'
+'125'
+'126'
+127'
 };
