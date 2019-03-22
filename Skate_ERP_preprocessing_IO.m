@@ -3,11 +3,11 @@ close all
 ccc
 
 exp = 'Skateboard';
-subs = {'100' '101' '102' '103' '104' '106' '107' '108' '109' '110' '111'...
-    '112' '113' '114' '115' '116' '117' '118' '119' '120' '122' '123' '124' '125'};
-is_goofy = [0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0];
-%subs = {'100'}; %to test on just one sub
-
+% subs = {'100' '101' '102' '103' '104' '106' '107' '108' '109' '110' '111'...
+%     '112' '113' '114' '115' '116' '117' '118' '119' '120' '122'};
+% is_goofy = [0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1];
+subs = {'127'}; %to test on just one sub
+is_goofy = [0];
 nsubs = length(subs);
 conds = {'P_CW';'P_CCW'; 'NP_CW'; 'NP_CCW'};
 nconds = length(conds);
@@ -47,7 +47,7 @@ for i_sub = 1:nsubs
         
         %epoch
         
-        EEG = pop_epoch( EEG, {  '3'  '5'  }, [-.2  1], 'newname',  sprintf('%s epochs' , setname), 'epochinfo', 'yes'); %Changed from [-.2 1] to [-1 2]. DR
+        EEG = pop_epoch( EEG, {  '1'  '2'  }, [-.2  1], 'newname',  sprintf('%s epochs' , setname), 'epochinfo', 'yes'); %Changed from [-.2 1] to [-1 2]. DR
         EEG = pop_rmbase( EEG, [-200    0]);
         
         %         eeglab redraw
@@ -57,7 +57,7 @@ for i_sub = 1:nsubs
         
         %   EMCP occular correction
         temp_ocular = EEG.data(end-1:end,:,:); %to save the EYE data for after
-        selection_cards = {'3','5' }; %different bin names, each condition should be separate
+        selection_cards = {'1','2' }; %different bin names, each condition should be separate
         EEG = gratton_emcp(EEG,selection_cards,{'VEOG'},{'HEOG'}); %this assumes the eye channels are called this
         EEG.emcp.table %this prints out the regression coefficients
         EEG.data(end-1:end,:,:) = temp_ocular; %replace the eye data
@@ -90,7 +90,7 @@ for i_sub = 1:nsubs
             end
             
         end
-        EEG = pop_selectevent( tempEEG, 'type',3 ,'renametype','Standard','deleteevents','on','deleteepochs','on','invertepochs','off');
+        EEG = pop_selectevent( tempEEG, 'type',1 ,'renametype','Standard','deleteevents','on','deleteepochs','on','invertepochs','off');
         EEG = pop_editset(EEG, 'setname',ThisIsTheName);
         EEG = pop_saveset( EEG, 'filename',ThisIsTheName,'filepath',[Pathname 'segments_IO_V2\']);
         
@@ -118,7 +118,7 @@ for i_sub = 1:nsubs
             end
             
         end
-        EEG = pop_selectevent( tempEEG, 'type',5,'renametype','Target','deleteevents','on','deleteepochs','on','invertepochs','off');
+        EEG = pop_selectevent( tempEEG, 'type',2,'renametype','Target','deleteevents','on','deleteepochs','on','invertepochs','off');
         EEG = pop_editset(EEG, 'setname',ThisIsTheName);
         EEG = pop_saveset( EEG, 'filename',ThisIsTheName,'filepath',[Pathname 'segments_IO_V2\']);
         
