@@ -12,3 +12,15 @@ S61 is the trigger for the start of the task itself
 S511 is the explosion sound at the end of the task
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Subs: 124, 125, 126, 127,...n?
+
+S1 is for the standard tones
+S2 are the target tones
+S4 is the trigger when participants accurately respond to the target
+S3 is the trigger when participants incorrectly respond to the standards.
+
+S20 - Countdown
+S30 start of task
+255 explosion

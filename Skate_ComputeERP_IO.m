@@ -6,18 +6,12 @@
 ccc
 %
 exp = 'Skateboard';
- subs = {'100' '102' '103' '104' '106' '108' '109' ...
-     '110' '111' '112' '113' '115' '116' '117' '118' '119' '120' '122'};%excluding the bad subs...
- ...kept original sub list below. Feel free to delete if need be. Daniel. 
-
-%  subs = {'100' '101' '102' '103' '104' '106' '107' '108' '109' ...
-%      '110' '111' '112' '113' '114' '115' '116' '117' '118' '119' '120'};
- 
+ subs = {'100' '101' '102' '103' '104' '106' '107' '108' '109' ...
+     '110' '111' '112' '113' '114' '115' '116' '117' '118' '119' '120' '122'}; 
 
 nsubs = length(subs); 
-conds =  {'P_CW';'P_CCW'; 'NP_CW'; 'NP_CCW'};
-conds_lab = {'Preferred Clockwise'; 'Preferred Counterclockwise'; 'Non-preferred Clockwise'; 'Non-preferred Counterclockwise'};
-%{'P_CW';'P_CCW'; 'NP_CW'; 'NP_CCW'};
+conds =  {'facing_in';'facing_out'};
+conds_lab = {'Facing Inside Track'; 'Facing Outside Track'};
 nconds = length(conds);
 Pathname = 'M:\Data\Skateboard\Winter2019\'; %M:\Data\Skateboard\Winter2019
 [ALLEEG EEG CURRENTSET ALLCOM] = eeglab;
@@ -27,9 +21,9 @@ for i_sub = 1:nsubs
     for i_cond = 1:nconds
         
         Filename = [subs{i_sub} '_' exp '_' conds{i_cond}];
-        EEG = pop_loadset('filename',[Filename '_Corrected_Target.set'],'filepath','M:\Data\Skateboard\Winter2019\segments\');
+        EEG = pop_loadset('filename',[Filename '_Corrected_Target.set'],'filepath','M:\Data\Skateboard\Winter2019\segmentsIO\');
         [ALLEEG, EEG, CURRENTSET] = eeg_store( ALLEEG, EEG, 0 );
-        EEG = pop_loadset('filename',[Filename '_Corrected_Standard.set'],'filepath','M:\Data\Skateboard\Winter2019\segments\');
+        EEG = pop_loadset('filename',[Filename '_Corrected_Standard.set'],'filepath','M:\Data\Skateboard\Winter2019\segmentsIO\');
         [ALLEEG, EEG, CURRENTSET] = eeg_store( ALLEEG, EEG, 0 );
 
 
@@ -58,12 +52,8 @@ for i_cond = 1:nconds
         case 1
             colour = 'b';
         case 2
-            colour = 'g';
-        case 3
             colour = 'r';
-        case 4
-            colour = 'm';
-    end
+        end
     
     subplot(2,nconds,i_cond);
         boundedline(EEG.times,squeeze(mean(erp_out(:,1,electrode,i_cond,:),5)),squeeze(std(erp_out(:,1,electrode,i_cond,:),[],5))./sqrt(nsubs),colour,...
@@ -95,7 +85,6 @@ for i_cond = 1:nconds
         ylabel('Voltage (uV)');
         
 end
-
 
 %% 
 %Difference Waves at any given electrodes. 
@@ -161,8 +150,69 @@ subplot(1,3,3)
         title('Standards, Pz');
         xlabel('Time (ms)');
         ylabel('Voltage (uV)');
-  
-       %%
+        
+        
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%                 DANIEL'S POSTER PLOTS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%difference on same axis
+erp_diff_out = squeeze(erp_out(:,1,:,:,:)-erp_out(:,2,:,:,:)); 
+figure('Color',[1 1 1]); 
+for i_cond = 1:nconds
+    switch i_cond
+        case 1
+            colour = 'b';
+        case 2
+            colour = 'r';
+        end
+
+    subplot;
+        boundedline(EEG.times,squeeze(mean(erp_diff_out(:,electrode,i_cond,:),4)),squeeze(std(0))./sqrt(nsubs),colour);
+        set(gca,'Color',[1 1 1]);
+        set(gca,'YDir','reverse'); 
+        axis tight; ylim([-8 12]);
+        line([-200 1000],[0 0],'color','k');
+        line([0 0],[-2.5 8],'color','k');
+        title('Difference Wave');
+        xlabel('Time (ms)');
+        ylabel('Voltage (uV)');
+end
+
+%SINGLE ERPS FOR INDIVIDUAL COPYING 
+
+erp_diff_out = squeeze(erp_out(:,1,:,:,:)-erp_out(:,2,:,:,:)); 
+figure('Color',[1 1 1]); 
+for i_cond = 1:nconds
+    switch i_cond
+        case 1
+            colour = 'b';
+        case 2
+            colour = 'r';
+        end
+    
+    figure;
+        boundedline(EEG.times,squeeze(mean(erp_out(:,1,electrode,i_cond,:),5)),squeeze(std(erp_out(:,1,electrode,i_cond,:),[],5))./sqrt(nsubs),colour,...
+        EEG.times,squeeze(mean(erp_out(:,2,electrode,i_cond,:),5)),squeeze(std(erp_out(:,2,electrode,i_cond,:),[],5))./sqrt(nsubs),'k');
+        set(gca,'Color',[1 1 1]);
+        set(gca,'YDir','reverse');
+        if i_cond == 2
+            legend('Targets','Standards','Location','NorthEast');
+        elseif i_cond == 1
+             legend('Targets','Standards','Location','NorthEast');
+        end
+        axis tight; ylim([-8 12]);
+        line([-200 1000],[0 0],'color','k');
+        line([0 0],[-2.5 8],'color','k');
+        title(conds_lab{i_cond});
+        xlabel('Time (ms)');
+        ylabel('Voltage (uV)');
+end
+
+
+%%
  %difference topographys
 time_window = find(EEG.times>250,1)-1:find(EEG.times>450,1)-2;
 figure('Color',[1 1 1]);
