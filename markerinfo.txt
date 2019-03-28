@@ -14,6 +14,8 @@ S511 is the explosion sound at the end of the task
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+We need a loop to recode the name of the triggers for the following subs: 
+
 Subs: 124, 125, 126, 127,...n?
 
 S1 is for the standard tones
