@@ -33,8 +33,10 @@ subs = {
 '125' - different triggers (info on markerinfo.txt)
 '126' - different triggers (info on markerinfo.txt)
 '127' - different triggers (info on markerinfo.txt)
+'128' - different triggers (info on markerinfo.txt) - noise and archer barked. some random kid tried...
+talking to sub while riding. didn't distract sub much.
+'129' - different triggers 
 };
-
 subs = {
 '104' 
 '106' 
@@ -58,5 +60,7 @@ subs = {
 '124'
 '125'
 '126'
-127'
+'127'
+'128'
+'129'
 };
