@@ -61,10 +61,10 @@ for i_sub = 1:nsubs
         %time since recording start in ms (integer)
         event_latency = [EEG.event.latency];
         
-        %remove all the extra ones
-        garbage_marker_bolean = strcmp(event_strings,'S  1'); %find strings
-        event_strings(garbage_marker_bolean) = []; %remove ones
-        event_latency(garbage_marker_bolean) = []; %from both
+%         %remove all the extra ones
+%         garbage_marker_bolean = strcmp(event_strings,'S  1'); %find strings
+%         event_strings(garbage_marker_bolean) = []; %remove ones
+%         event_latency(garbage_marker_bolean) = []; %from both
         
         %convert strings to integers so they are easier to work with
         event_markers = zeros(size(event_strings));
