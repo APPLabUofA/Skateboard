@@ -8,6 +8,8 @@ subs = {'100' '101' '102' '103' '104' '106' '107' '108' '109' '110' '111'...
     '126' '127' '128' '129'};
 is_goofy = [0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1,...
             0, 0, 0, 0, 0, 1, 1];
+dif_trig = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,...
+            0, 1, 1, 1, 1, 1, 1];
 % 107 - Goofy
 % 109 - Goofy
 % 110 - Goofy
@@ -38,6 +40,12 @@ nStandard = 3;
 nTarget = 5;
 nFalseAlarm = 7;
 nCorrectResponse = 9;
+
+pStandard = 1;
+pTarget = 2;
+pFalseAlarm = 3;
+pCorrectResponse = 4;
+
 
 prop_correct = zeros(nsubs,length(new_cond));
 prop_correctRej = zeros(nsubs,length(new_cond));
@@ -73,6 +81,20 @@ for i_sub = 1:nsubs
         event_markers(strcmp(event_strings,'S  7')) = nFalseAlarm;   %false alarm
         event_markers(strcmp(event_strings,'S  9')) = nCorrectResponse;   %correct response
         
+        %if sum(strcmp(subs{i_sub}, {'124'; '125'; '126'; '127'; '128'; '129'}) > 0)
+        if dif_trig(i_sub)
+            nStandard = 1;
+            nTarget = 2;
+            nFalseAlarm = 3;
+            nCorrectResponse = 4;
+            
+            event_markers = zeros(size(event_strings));
+            event_markers(strcmp(event_strings,'S  1')) = pStandard;   %standard
+            event_markers(strcmp(event_strings,'S  2')) = pTarget;   %target
+            event_markers(strcmp(event_strings,'S  3')) = pFalseAlarm;   %false alarm
+            event_markers(strcmp(event_strings,'S  4')) = pCorrectResponse;   %correct response
+        end
+        
         event_latency(event_markers == 0) = []; %remove any extra triggers
         event_markers(event_markers == 0) = []; % remove any extra triggers
         
@@ -101,7 +123,8 @@ for i_sub = 1:nsubs
             potential_RT = next_time-tone_time;
             
             %if it is a tone (|| means or)
-            if this_marker == nTarget || this_marker == nStandard
+            if this_marker == nTarget || this_marker == nStandard...
+               || this_marker == pTarget || this_marker == pStandard     
                 count_tones = count_tones + 1;
                 fprintf('\n Tone Number: ') %\n is a new line
                 fprintf(num2str(count_tones))
@@ -114,14 +137,16 @@ for i_sub = 1:nsubs
                 fprintf('Next marker: ')
                 fprintf(num2str(next_marker))
                 fprintf(' , ')
+                
+                
             end
             
-            if this_marker == nTarget
+            if this_marker == nTarget || this_marker == pTarget
                 count_targets = count_targets + 1;
                 
                 
                 %if correct response
-                if next_marker == nCorrectResponse
+                if next_marker == nCorrectResponse || next_marker == pCorrectResponse
                     count_correct = count_correct + 1;
                     RT_correct = [RT_correct potential_RT];
                     fprintf('Responded -- > RT = ')
@@ -129,25 +154,28 @@ for i_sub = 1:nsubs
                     fprintf(' ms')
                     
                     %if miss since next is another tone
-                elseif next_marker == nStandard || next_marker == nTarget
+                elseif next_marker == nStandard || next_marker == nTarget...
+                       || next_marker == pStandard || next_marker == pTarget 
                     count_misses = count_misses + 1;
                     fprintf('Did not respond')
                     
                     %anything else?
                 else
-                    fprintf('Not 9 or 3 or 5')
+                    fprintf('Not 9 or 3 or 5 (or 4, 1 or 2)' )
+                    
                 end
                 
-            elseif this_marker == nStandard
+            elseif this_marker == nStandard || this_marker == pStandard
                 count_standards = count_standards + 1;
                 
                 %if correct rejection since next is another tone
-                if next_marker == nStandard || next_marker == nTarget
+                if next_marker == nStandard || next_marker == nTarget...
+                   || next_marker == pStandard || next_marker == pTarget      
                     count_correctRej = count_correctRej + 1;
                     fprintf('Correct Rejection')
                     
                     %if false alarm
-                elseif next_marker == nFalseAlarm
+                elseif next_marker == nFalseAlarm || next_marker == pFalseAlarm
                     RT_falseAlarm = [RT_falseAlarm potential_RT];
                     count_falseAlarm = count_falseAlarm + 1;
                     fprintf('False Alarm -- > RT = ')
@@ -156,7 +184,7 @@ for i_sub = 1:nsubs
                     
                     %anything else?
                 else
-                    fprintf('Not 7 or 3 or 5')
+                    fprintf('Not 7 or 3 or 5 (or 3 1 2')
                 end
                 
             end %if target,elseStandard
