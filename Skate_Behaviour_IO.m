@@ -41,10 +41,7 @@ nTarget = 5;
 nFalseAlarm = 7;
 nCorrectResponse = 9;
 
-pStandard = 1;
-pTarget = 2;
-pFalseAlarm = 3;
-pCorrectResponse = 4;
+
 
 
 prop_correct = zeros(nsubs,length(new_cond));
@@ -69,10 +66,7 @@ for i_sub = 1:nsubs
         %time since recording start in ms (integer)
         event_latency = [EEG.event.latency];
         
-%         %remove all the extra ones
-%         garbage_marker_bolean = strcmp(event_strings,'S  1'); %find strings
-%         event_strings(garbage_marker_bolean) = []; %remove ones
-%         event_latency(garbage_marker_bolean) = []; %from both
+
         
         %convert strings to integers so they are easier to work with
         event_markers = zeros(size(event_strings));
@@ -81,18 +75,16 @@ for i_sub = 1:nsubs
         event_markers(strcmp(event_strings,'S  7')) = nFalseAlarm;   %false alarm
         event_markers(strcmp(event_strings,'S  9')) = nCorrectResponse;   %correct response
         
-        %if sum(strcmp(subs{i_sub}, {'124'; '125'; '126'; '127'; '128'; '129'}) > 0)
         if dif_trig(i_sub)
             nStandard = 1;
             nTarget = 2;
             nFalseAlarm = 3;
             nCorrectResponse = 4;
             
-            event_markers = zeros(size(event_strings));
-            event_markers(strcmp(event_strings,'S  1')) = pStandard;   %standard
-            event_markers(strcmp(event_strings,'S  2')) = pTarget;   %target
-            event_markers(strcmp(event_strings,'S  3')) = pFalseAlarm;   %false alarm
-            event_markers(strcmp(event_strings,'S  4')) = pCorrectResponse;   %correct response
+            event_markers(strcmp(event_strings,'S  1')) = nStandard;   %standard
+            event_markers(strcmp(event_strings,'S  2')) = nTarget;   %target
+            event_markers(strcmp(event_strings,'S  3')) = nFalseAlarm;   %false alarm
+            event_markers(strcmp(event_strings,'S  4')) = nCorrectResponse;   %correct response
         end
         
         event_latency(event_markers == 0) = []; %remove any extra triggers
@@ -123,8 +115,7 @@ for i_sub = 1:nsubs
             potential_RT = next_time-tone_time;
             
             %if it is a tone (|| means or)
-            if this_marker == nTarget || this_marker == nStandard...
-               || this_marker == pTarget || this_marker == pStandard     
+            if this_marker == nTarget || this_marker == nStandard
                 count_tones = count_tones + 1;
                 fprintf('\n Tone Number: ') %\n is a new line
                 fprintf(num2str(count_tones))
@@ -141,12 +132,12 @@ for i_sub = 1:nsubs
                 
             end
             
-            if this_marker == nTarget || this_marker == pTarget
+            if this_marker == nTarget 
                 count_targets = count_targets + 1;
                 
                 
                 %if correct response
-                if next_marker == nCorrectResponse || next_marker == pCorrectResponse
+                if next_marker == nCorrectResponse 
                     count_correct = count_correct + 1;
                     RT_correct = [RT_correct potential_RT];
                     fprintf('Responded -- > RT = ')
@@ -154,28 +145,26 @@ for i_sub = 1:nsubs
                     fprintf(' ms')
                     
                     %if miss since next is another tone
-                elseif next_marker == nStandard || next_marker == nTarget...
-                       || next_marker == pStandard || next_marker == pTarget 
+                elseif next_marker == nStandard || next_marker == nTarget
                     count_misses = count_misses + 1;
                     fprintf('Did not respond')
                     
                     %anything else?
                 else
-                    fprintf('Not 9 or 3 or 5 (or 4, 1 or 2)' )
+                    fprintf('Not 9 or 3 or 5 (or 4, 1 or 2)')
                     
                 end
                 
-            elseif this_marker == nStandard || this_marker == pStandard
+            elseif this_marker == nStandard
                 count_standards = count_standards + 1;
                 
                 %if correct rejection since next is another tone
-                if next_marker == nStandard || next_marker == nTarget...
-                   || next_marker == pStandard || next_marker == pTarget      
+                if next_marker == nStandard || next_marker == nTarget
                     count_correctRej = count_correctRej + 1;
                     fprintf('Correct Rejection')
                     
                     %if false alarm
-                elseif next_marker == nFalseAlarm || next_marker == pFalseAlarm
+                elseif next_marker == nFalseAlarm
                     RT_falseAlarm = [RT_falseAlarm potential_RT];
                     count_falseAlarm = count_falseAlarm + 1;
                     fprintf('False Alarm -- > RT = ')
@@ -244,7 +233,7 @@ set(gcf,'color','w');
 set(gcf, 'Position',  [100, 500, 1000, 400])
 subplot(1,2,1)
 barweb(grand_mean_RT_Corr,grand_withinSE_RT_Corr);
-ylim([450 500])
+ylim([450 525])
 ylabel('Median RT (ms)')
 title('Target Reaction Time (w/i subject SE)')
 legend(conds_plot)
