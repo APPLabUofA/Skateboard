@@ -24,7 +24,7 @@ dif_trig = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,...
 
 nsubs = length(subs);
 conds = {'P_CW';'P_CCW'; 'NP_CW'; 'NP_CCW'};
-new_cond = {'FacingIn'; 'FacingOut'};
+new_cond = {'P_In'; 'P_Out'; 'NP_In'; 'NP_Out'};
 
 %preferred, clockwise - non-preffered, CCW
 nconds = length(conds);
@@ -179,17 +179,33 @@ for i_sub = 1:nsubs
             end %if target,elseStandard
         end %every event
         
-        %reassign conditions for facing in vs out
+        %reassign conditions
+        %IF GOOFY: P_CCW = preferred_in (new_cond_index = 1;)
+        %IF GOOFY: P_CW = preferred_out (new_cond_index = 2;)
+        %IF GOOFY: NP_CW = nonpreferred_in (new_cond_index = 3;)
+        %IF GOOFY: NP_CCW = nonpreferred_out (new_cond_index = 4;)
+        %IF regular: P_CW = preferred_in (new_cond_index = 1;)
+        %IF regular: P_CCW = preferred_out (new_cond_index = 2;)
+        %IF regular: NP_CCW = nonpreferred_in (new_cond_index = 3;)
+        %IF regular: NP_CW = nonpreferred_out (new_cond_index = 4;)
         if is_goofy(i_sub)
-            if strcmp(conds{i_cond},'P_CCW') || strcmp(conds{i_cond},'NP_CW')
+            if strcmp(conds{i_cond},'P_CCW')
                 new_cond_index = 1;
-            else
+            elseif strcmp(conds{i_cond},'P_CW')
                 new_cond_index = 2;
+            elseif strcmp(conds{i_cond},'NP_CW')
+                new_cond_index = 3;
+            elseif strcmp(conds{i_cond},'NP_CCW')
+                new_cond_index = 4;
             end
         elseif ~is_goofy(i_sub)
-            if strcmp(conds{i_cond},'P_CCW') || strcmp(conds{i_cond},'NP_CW')
+            if strcmp(conds{i_cond},'NP_CW')
+                new_cond_index = 4;
+            elseif strcmp(conds{i_cond},'NP_CCW')
+                new_cond_index = 3;
+            elseif strcmp(conds{i_cond},'P_CCW')
                 new_cond_index = 2;
-            else
+            elseif strcmp(conds{i_cond},'P_CW')
                 new_cond_index = 1;
             end
         end
@@ -227,7 +243,7 @@ prop_corr_deviation = prop_correct - repmat(sub_mean_prop_corr,1,n_conditions);
 grand_withinSE_prop_corr = std(prop_corr_deviation)/sqrt(nsubs);
 
 %plot it
-conds_plot = {'FacingIn'; 'FacingOut'};
+conds_plot = {'Pref_FaceIn'; 'Pref_FaceOut';'NonPref_FaceIn'; 'NonPref_FaceOut'}; 
 figure;
 set(gcf,'color','w');
 set(gcf, 'Position',  [100, 500, 1000, 400])
@@ -242,3 +258,42 @@ barweb(grand_mean_prop_corr,grand_withinSE_prop_corr);
 ylim([.9 1])
 ylabel('Proportion')
 title('Proportion of Targets responded to')
+
+%side by side plots
+gran_meanRT_FaceIn = grand_mean_RT_Corr(1:2);
+grand_meanRT_FaceOut = grand_mean_RT_Corr(3:4);
+grand_wSE_RT_FaceIn = grand_withinSE_RT_Corr(1:2);
+grand_wSE_RT_FaceOut = grand_withinSE_RT_Corr(3:4);
+
+conds_plot = {'FacingIn'; 'FacingOut'}; 
+figure;
+set(gcf,'color','w');
+set(gcf, 'Position',  [100, 500, 1000, 400])
+subplot(2,2,1)
+barweb(gran_meanRT_FaceIn,grand_wSE_RT_FaceIn);
+ylim([450 525])
+ylabel('Median RT (ms)')
+xlabel ('Preferred Stance')
+title('Target Reaction Time (w/i subject SE)')
+legend(conds_plot)
+subplot(2,2,2)
+conds_plot = {'FacingIn'; 'FacingOut'}; 
+barweb(grand_meanRT_FaceOut,grand_wSE_RT_FaceOut);
+ylim([450 525])
+ylabel('Median RT (ms)')
+xlabel('Non-preferred Stance')
+title('Target Reaction Time (w/i subject SE)')
+legend(conds_plot)
+subplot(2,2,3)
+barweb(grand_mean_prop_corr(1:2),grand_withinSE_prop_corr(1:2));
+ylim([.9 1])
+ylabel('Proportion')
+xlabel ('Preferred Stance')
+title('Proportion of Targets responded to')
+subplot(2,2,4)
+barweb(grand_mean_prop_corr(3:4),grand_withinSE_prop_corr(3:4));
+ylim([.9 1])
+ylabel('Proportion')
+xlabel ('Non-preferred Stance')
+title('Proportion of Targets responded to')
+
