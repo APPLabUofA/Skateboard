@@ -259,7 +259,7 @@ ylim([.9 1])
 ylabel('Proportion')
 title('Proportion of Targets responded to')
 
-%side by side plots
+%side by side plots - PREFERENCE on X Axis
 gran_meanRT_FaceIn = grand_mean_RT_Corr(1:2);
 grand_meanRT_FaceOut = grand_mean_RT_Corr(3:4);
 grand_wSE_RT_FaceIn = grand_withinSE_RT_Corr(1:2);
@@ -297,3 +297,28 @@ ylabel('Proportion')
 xlabel ('Non-preferred Stance')
 title('Proportion of Targets responded to')
 
+%side by side plots - FACING on X Axis
+gran_meanRT_P_NP_IN = grand_mean_RT_Corr(1:2:3);
+gran_meanRT_P_NP_OUT = grand_mean_RT_Corr(2:2:4);
+grand_wSE_RT_P_NP_IN = grand_withinSE_RT_Corr(1:2:3);
+grand_wSE_RT_P_NP_OUT = grand_withinSE_RT_Corr(2:2:4);
+
+conds_plot = {'Preferred'; 'Non-Preferred'}; 
+figure;
+set(gcf,'color','w');
+set(gcf, 'Position',  [100, 500, 1000, 400])
+subplot(1,2,1)
+barweb(gran_meanRT_P_NP_IN,grand_wSE_RT_P_NP_IN);
+ylim([450 525])
+ylabel('Median RT (ms)')
+xlabel ('Facing In')
+title('Target Reaction Time (w/i subject SE)')
+legend(conds_plot)
+subplot(1,2,2)
+conds_plot = {'Preferred'; 'Non-Preferred'}; 
+barweb(gran_meanRT_P_NP_OUT,grand_wSE_RT_P_NP_OUT);
+ylim([450 525])
+ylabel('Median RT (ms)')
+xlabel ('Facing Out')
+title('Target Reaction Time (w/i subject SE)')
+legend(conds_plot)

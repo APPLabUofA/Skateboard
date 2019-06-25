@@ -90,7 +90,7 @@ for i_cond = 1:nconds
         axis tight; ylim([-8 12]);
         line([-200 1000],[0 0],'color','k');
         line([0 0],[-2.5 8],'color','k');
-        title(conds_lab{i_cond});
+        title(conds{i_cond});
         xlabel('Time (ms)');
         ylabel('Voltage (uV)');
         
@@ -112,7 +112,7 @@ subplot(1,3,1)
         set(gca,'YDir','reverse'); 
 
         
-        legend(conds_lab,'Location','NorthEast'); 
+        legend(conds,'Location','NorthEast'); 
        
         axis tight; ylim([-8 12]);
         line([-200 1000],[0 0],'color','k');
@@ -134,7 +134,7 @@ subplot(1,3,2)
         set(gca,'YDir','reverse'); 
 
         
-        legend(conds_lab,'Location','NorthEast'); 
+        legend(conds,'Location','NorthEast'); 
        
         axis tight; ylim([-8 12]);
         line([-200 1000],[0 0],'color','k');
@@ -153,7 +153,7 @@ subplot(1,3,3)
         set(gca,'YDir','reverse'); 
 
         
-        legend(conds_lab,'Location','Northeast'); 
+        legend(conds,'Location','Northeast'); 
        
         axis tight; ylim([-10 15]);
         line([-200 1000],[0 0],'color','k');
@@ -172,7 +172,7 @@ for i_cond = 1:nconds
         temp = mean(mean(erp_diff_out(time_window,:,i_cond,:),4),1)';
         temp(16:18) = NaN;
         topoplot(temp,'M:\Analysis\VR_P3\BrainAMP_EOG_VR.ced', 'whitebk','on','plotrad',.6,'maplimits',[-4 4]  )
-        title(conds_lab{i_cond});
+        title(conds{i_cond});
         t = colorbar('peer',gca);
         set(get(t,'ylabel'),'String', 'Voltage Difference (uV)');
 
