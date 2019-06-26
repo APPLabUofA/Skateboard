@@ -41,9 +41,9 @@ nCorrectResponse = 9;
 
 prop_correct = zeros(nsubs,length(new_cond));
 prop_correctRej = zeros(nsubs,length(new_cond));
-medianRT_correct = zeros(nsubs,length(new_cond));
-medianRT_falseAlarm = zeros(nsubs,length(new_cond));
-
+medianACC_correct = zeros(nsubs,length(new_cond));
+% medianRT_correct = zeros(nsubs,length(new_cond));
+% medianRT_falseAlarm = zeros(nsubs,length(new_cond));
 %%
 for i_sub = 1:nsubs
     for i_cond = 1:nconds
@@ -59,9 +59,7 @@ for i_sub = 1:nsubs
         event_strings = {EEG.event.type}; %array of marker label strings
         %time since recording start in ms (integer)
         event_latency = [EEG.event.latency];
-        
-
-        
+                
         %convert strings to integers so they are easier to work with
         event_markers = zeros(size(event_strings));
         event_markers(strcmp(event_strings,'S  3')) = nStandard;   %standard
@@ -96,8 +94,9 @@ for i_sub = 1:nsubs
         count_correctRej = 0;
         count_falseAlarm = 0;
         
-        RT_correct = [];
-        RT_falseAlarm = [];
+        ACC_correct = [];
+%         RT_correct = [];
+%         RT_falseAlarm = [];
         
         %for every event
         for i_event = 1:length(event_markers)-1 %last one is a filler markers
@@ -106,7 +105,8 @@ for i_sub = 1:nsubs
             tone_time = event_latency(i_event);
             next_marker = event_markers(i_event+1);
             next_time = event_latency(i_event+1);
-            potential_RT = next_time-tone_time;
+            potential_ACC = count_correct/50*100;
+%             potential_RT = next_time-tone_time;
             
             %if it is a tone (|| means or)
             if this_marker == nTarget || this_marker == nStandard
@@ -133,10 +133,10 @@ for i_sub = 1:nsubs
                 %if correct response
                 if next_marker == nCorrectResponse 
                     count_correct = count_correct + 1;
-                    RT_correct = [RT_correct potential_RT];
-                    fprintf('Responded -- > RT = ')
-                    fprintf(num2str(potential_RT))
-                    fprintf(' ms')
+                    ACC_correct = [ACC_correct potential_ACC];
+                    fprintf('Responded -- > Accuracy total = ')
+                    fprintf(num2str(potential_ACC))
+                    fprintf(' %')
                     
                     %if miss since next is another tone
                 elseif next_marker == nStandard || next_marker == nTarget
@@ -159,11 +159,10 @@ for i_sub = 1:nsubs
                     
                     %if false alarm
                 elseif next_marker == nFalseAlarm
-                    RT_falseAlarm = [RT_falseAlarm potential_RT];
+                    %RT_falseAlarm = [RT_falseAlarm potential_RT];
                     count_falseAlarm = count_falseAlarm + 1;
-                    fprintf('False Alarm -- > RT = ')
-                    fprintf(num2str(potential_RT))
-                    fprintf(' ms')
+                    fprintf('False Alarm')
+
                     
                     %anything else?
                 else
@@ -206,27 +205,26 @@ for i_sub = 1:nsubs
         
         prop_correct(i_sub,new_cond_index) = count_correct / count_targets;
         prop_correctRej(i_sub,new_cond_index) = count_correctRej / count_standards;
-        medianRT_correct(i_sub,new_cond_index) = median(RT_correct);
-        medianRT_falseAlarm(i_sub,new_cond_index) = median(RT_falseAlarm);
+        medianACC_correct(i_sub,new_cond_index) = median(ACC_correct);
+        %medianRT_falseAlarm(i_sub,new_cond_index) = median(RT_falseAlarm);
         
     end
 end
 
-
-n_conditions = size(medianRT_correct,2)
+n_conditions = size(medianACC_correct,2)
 %this the grand mean over subjects of the median RTs
-grand_mean_RT_Corr = mean(medianRT_correct)
+grand_mean_ACC_Corr = mean(medianACC_correct)
 %these are normal error bars (Standard Error)
-grand_SE_RT_Corr = std(medianRT_correct)/sqrt(nsubs)
+grand_SE_ACC_Corr = std(medianACC_correct)/sqrt(nsubs)
 %these are smaller within subject error bars
 %made by subtracting away each subjects average
 %from their other scores to remove between subject difference
-sub_mean_RT_Corr = mean(medianRT_correct,2); %average for each subject
+sub_mean_ACC_Corr = mean(medianACC_correct,2); %average for each subject
 %this subtracts each subjects average from their scores
 %repmat repeats the matrix 4 times for each condition
-mean_RT_Corr_deviation = medianRT_correct - repmat(sub_mean_RT_Corr,1,n_conditions);
+mean_ACC_Corr_deviation = medianACC_correct - repmat(sub_mean_ACC_Corr,1,n_conditions);
 %then take the standard error of those deviatoins from the mean
-grand_withinSE_RT_Corr = std(mean_RT_Corr_deviation)/sqrt(nsubs)
+grand_withinSE_ACC_Corr = std(mean_ACC_Corr_deviation)/sqrt(nsubs)
 
 
 %now do the same for proportion correct
@@ -242,7 +240,7 @@ figure;
 set(gcf,'color','w');
 set(gcf, 'Position',  [100, 500, 1000, 400])
 subplot(1,2,1)
-barweb(grand_mean_RT_Corr,grand_withinSE_RT_Corr);
+barweb(grand_mean_RT_Corr,grand_withinSE_ACC_Corr);
 ylim([450 525])
 ylabel('Median RT (ms)')
 title('Target Reaction Time (w/i subject SE)')
@@ -256,8 +254,8 @@ title('Proportion of Targets responded to')
 %side by side plots - PREFERENCE on X Axis
 gran_meanRT_FaceIn = grand_mean_RT_Corr(1:2);
 grand_meanRT_FaceOut = grand_mean_RT_Corr(3:4);
-grand_wSE_RT_FaceIn = grand_withinSE_RT_Corr(1:2);
-grand_wSE_RT_FaceOut = grand_withinSE_RT_Corr(3:4);
+grand_wSE_RT_FaceIn = grand_withinSE_ACC_Corr(1:2);
+grand_wSE_RT_FaceOut = grand_withinSE_ACC_Corr(3:4);
 
 conds_plot = {'FacingIn'; 'FacingOut'}; 
 figure;
@@ -294,8 +292,8 @@ title('Proportion of Targets responded to')
 %side by side plots - FACING on X Axis
 gran_meanRT_P_NP_IN = grand_mean_RT_Corr(1:2:3);
 gran_meanRT_P_NP_OUT = grand_mean_RT_Corr(2:2:4);
-grand_wSE_RT_P_NP_IN = grand_withinSE_RT_Corr(1:2:3);
-grand_wSE_RT_P_NP_OUT = grand_withinSE_RT_Corr(2:2:4);
+grand_wSE_RT_P_NP_IN = grand_withinSE_ACC_Corr(1:2:3);
+grand_wSE_RT_P_NP_OUT = grand_withinSE_ACC_Corr(2:2:4);
 
 conds_plot = {'Preferred'; 'Non-Preferred'}; 
 figure;
@@ -316,3 +314,5 @@ ylabel('Median RT (ms)')
 xlabel ('Facing Out')
 title('Target Reaction Time (w/i subject SE)')
 legend(conds_plot)
+
+
