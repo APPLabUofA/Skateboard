@@ -10,15 +10,7 @@ is_goofy = [0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1,...
             0, 0, 0, 0, 0, 1, 1];
 dif_trig = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,...
             0, 1, 1, 1, 1, 1, 1];
-% 107 - Goofy
-% 109 - Goofy
-% 110 - Goofy
-% 113 - Goofy
-% 114 - Goofy
-% 115 - Goofy
-% 122 - Goofy
-% 128 - Goofy
-% 129 - Goofy
+
 %%
 nsubs = length(subs);
 conds = {'P_CW';'P_CCW'; 'NP_CW'; 'NP_CCW'};
@@ -28,9 +20,9 @@ new_cond = {'P_In'; 'P_Out'; 'NP_In'; 'NP_Out'};
 nconds = length(conds);
 Pathname = 'M:\Data\Skateboard\winter2019\';
 
-if ~exist([Pathname 'segments\'])
-    mkdir([Pathname 'segments\']);
-end
+% if ~exist([Pathname 'segments\'])
+%     mkdir([Pathname 'segments\']);
+% end
 [ALLEEG EEG CURRENTSET ALLCOM] = eeglab;
 
 % Marker Numbers
@@ -134,7 +126,7 @@ for i_sub = 1:nsubs
                 if next_marker == nCorrectResponse 
                     count_correct = count_correct + 1;
                     ACC_correct = [ACC_correct potential_ACC];
-                    fprintf('Responded -- > Accuracy total = ')
+                    fprintf('Responded -- > Cummulative Accuracy = ')
                     fprintf(num2str(potential_ACC))
                     fprintf(' %')
                     
@@ -205,7 +197,7 @@ for i_sub = 1:nsubs
         
         prop_correct(i_sub,new_cond_index) = count_correct / count_targets;
         prop_correctRej(i_sub,new_cond_index) = count_correctRej / count_standards;
-        medianACC_correct(i_sub,new_cond_index) = median(ACC_correct);
+        medianACC_correct(i_sub,new_cond_index) = median(potential_ACC);
         %medianRT_falseAlarm(i_sub,new_cond_index) = median(RT_falseAlarm);
         
     end
@@ -235,15 +227,15 @@ prop_corr_deviation = prop_correct - repmat(sub_mean_prop_corr,1,n_conditions);
 grand_withinSE_prop_corr = std(prop_corr_deviation)/sqrt(nsubs);
 
 %plot it
-conds_plot = {'Pref_FaceIn'; 'Pref_FaceOut';'NonPref_FaceIn'; 'NonPref_FaceOut'}; 
+conds_plot = {'P_FaceIn'; 'P_FaceOut';'NP_FaceIn'; 'NP_FaceOut'}; 
 figure;
 set(gcf,'color','w');
 set(gcf, 'Position',  [100, 500, 1000, 400])
 subplot(1,2,1)
-barweb(grand_mean_RT_Corr,grand_withinSE_ACC_Corr);
-ylim([450 525])
+barweb(grand_mean_ACC_Corr,grand_withinSE_ACC_Corr);
+ylim([50 110])
 ylabel('Median RT (ms)')
-title('Target Reaction Time (w/i subject SE)')
+title('Target Accuracy')
 legend(conds_plot)
 subplot(1,2,2)
 barweb(grand_mean_prop_corr,grand_withinSE_prop_corr);
@@ -251,68 +243,77 @@ ylim([.9 1])
 ylabel('Proportion')
 title('Proportion of Targets responded to')
 
+        %IF GOOFY: P_CCW = preferred_in (new_cond_index = 1;)
+        %IF GOOFY: P_CW = preferred_out (new_cond_index = 2;)
+        %IF GOOFY: NP_CW = nonpreferred_in (new_cond_index = 3;)
+        %IF GOOFY: NP_CCW = nonpreferred_out (new_cond_index = 4;)
+        %IF regular: P_CW = preferred_in (new_cond_index = 1;)
+        %IF regular: P_CCW = preferred_out (new_cond_index = 2;)
+        %IF regular: NP_CCW = nonpreferred_in (new_cond_index = 3;)
+        %IF regular: NP_CW = nonpreferred_out (new_cond_index = 4;)
+        
 %side by side plots - PREFERENCE on X Axis
-gran_meanRT_FaceIn = grand_mean_RT_Corr(1:2);
-grand_meanRT_FaceOut = grand_mean_RT_Corr(3:4);
-grand_wSE_RT_FaceIn = grand_withinSE_ACC_Corr(1:2);
-grand_wSE_RT_FaceOut = grand_withinSE_ACC_Corr(3:4);
+grand_meanACC_Pref = grand_mean_ACC_Corr(1:2);
+grand_meanACC_NPref = grand_mean_ACC_Corr(3:4);
+grand_wSE_ACC_Pref = grand_withinSE_ACC_Corr(1:2);
+grand_wSE_ACC_NPref = grand_withinSE_ACC_Corr(3:4);
 
 conds_plot = {'FacingIn'; 'FacingOut'}; 
 figure;
 set(gcf,'color','w');
 set(gcf, 'Position',  [100, 500, 1000, 400])
-subplot(2,2,1)
-barweb(gran_meanRT_FaceIn,grand_wSE_RT_FaceIn);
-ylim([450 525])
-ylabel('Median RT (ms)')
+subplot(1,2,1)
+barweb(grand_meanACC_Pref,grand_wSE_ACC_Pref);
+ylim([90 100])
+ylabel('Accuracy %')
 xlabel ('Preferred Stance')
-title('Target Reaction Time (w/i subject SE)')
+title('Target Accuracy (w/i subject SE)')
 legend(conds_plot)
-subplot(2,2,2)
+subplot(1,2,2)
 conds_plot = {'FacingIn'; 'FacingOut'}; 
-barweb(grand_meanRT_FaceOut,grand_wSE_RT_FaceOut);
-ylim([450 525])
-ylabel('Median RT (ms)')
+barweb(grand_meanACC_NPref,grand_wSE_ACC_NPref);
+ylim([90 100])
+ylabel('Accuracy %')
 xlabel('Non-preferred Stance')
 title('Target Reaction Time (w/i subject SE)')
 legend(conds_plot)
-subplot(2,2,3)
-barweb(grand_mean_prop_corr(1:2),grand_withinSE_prop_corr(1:2));
-ylim([.9 1])
-ylabel('Proportion')
-xlabel ('Preferred Stance')
-title('Proportion of Targets responded to')
-subplot(2,2,4)
-barweb(grand_mean_prop_corr(3:4),grand_withinSE_prop_corr(3:4));
-ylim([.9 1])
-ylabel('Proportion')
-xlabel ('Non-preferred Stance')
-title('Proportion of Targets responded to')
+% subplot(2,2,3)
+% barweb(grand_mean_prop_corr(1:2),grand_withinSE_prop_corr(1:2));
+% ylim([.9 1])
+% ylabel('Proportion')
+% xlabel ('Preferred Stance')
+% title('Proportion of Targets responded to')
+% subplot(2,2,4)
+% barweb(grand_mean_prop_corr(3:4),grand_withinSE_prop_corr(3:4));
+% ylim([.9 1])
+% ylabel('Proportion')
+% xlabel ('Non-preferred Stance')
+% title('Proportion of Targets responded to')
 
 %side by side plots - FACING on X Axis
-gran_meanRT_P_NP_IN = grand_mean_RT_Corr(1:2:3);
-gran_meanRT_P_NP_OUT = grand_mean_RT_Corr(2:2:4);
-grand_wSE_RT_P_NP_IN = grand_withinSE_ACC_Corr(1:2:3);
-grand_wSE_RT_P_NP_OUT = grand_withinSE_ACC_Corr(2:2:4);
+gran_meanACC_Face_IN = grand_mean_ACC_Corr(1:2:3);
+gran_meanACC_Face_OUT = grand_mean_ACC_Corr(2:2:4);
+grand_wSE_ACC_P_NP_IN = grand_withinSE_ACC_Corr(1:2:3);
+grand_wSE_ACC_P_NP_OUT = grand_withinSE_ACC_Corr(2:2:4);
 
 conds_plot = {'Preferred'; 'Non-Preferred'}; 
 figure;
 set(gcf,'color','w');
 set(gcf, 'Position',  [100, 500, 1000, 400])
 subplot(1,2,1)
-barweb(gran_meanRT_P_NP_IN,grand_wSE_RT_P_NP_IN);
-ylim([450 525])
-ylabel('Median RT (ms)')
+barweb(gran_meanACC_Face_IN,grand_wSE_ACC_P_NP_IN);
+ylim([90 100])
+ylabel('Accuracy %')
 xlabel ('Facing In')
-title('Target Reaction Time (w/i subject SE)')
+title('Target Accuracy')
 legend(conds_plot)
 subplot(1,2,2)
 conds_plot = {'Preferred'; 'Non-Preferred'}; 
-barweb(gran_meanRT_P_NP_OUT,grand_wSE_RT_P_NP_OUT);
-ylim([450 525])
-ylabel('Median RT (ms)')
+barweb(gran_meanACC_Face_OUT,grand_wSE_ACC_P_NP_OUT);
+ylim([90 100])
+ylabel('Accuracy %')
 xlabel ('Facing Out')
-title('Target Reaction Time (w/i subject SE)')
+title('Target Accuracy')
 legend(conds_plot)
 
 
