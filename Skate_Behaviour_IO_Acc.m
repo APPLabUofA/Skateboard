@@ -218,7 +218,6 @@ mean_ACC_Corr_deviation = medianACC_correct - repmat(sub_mean_ACC_Corr,1,n_condi
 %then take the standard error of those deviatoins from the mean
 grand_withinSE_ACC_Corr = std(mean_ACC_Corr_deviation)/sqrt(nsubs)
 
-
 %now do the same for proportion correct
 grand_mean_prop_corr = mean(prop_correct);
 grand_SE_prop_corr = std(prop_correct)/sqrt(nsubs);
@@ -226,39 +225,39 @@ sub_mean_prop_corr = mean(prop_correct,2);
 prop_corr_deviation = prop_correct - repmat(sub_mean_prop_corr,1,n_conditions);
 grand_withinSE_prop_corr = std(prop_corr_deviation)/sqrt(nsubs);
 
-%plot it
-conds_plot = {'P_FaceIn'; 'P_FaceOut';'NP_FaceIn'; 'NP_FaceOut'}; 
-figure;
-set(gcf,'color','w');
-set(gcf, 'Position',  [100, 500, 1000, 400])
-subplot(1,2,1)
-barweb(grand_mean_ACC_Corr,grand_withinSE_ACC_Corr);
-ylim([50 110])
-ylabel('Median RT (ms)')
-title('Target Accuracy')
-legend(conds_plot)
-subplot(1,2,2)
-barweb(grand_mean_prop_corr,grand_withinSE_prop_corr);
-ylim([.9 1])
-ylabel('Proportion')
-title('Proportion of Targets responded to')
+%%
+% %plot it
+% conds_plot = {'P_FaceIn'; 'P_FaceOut';'NP_FaceIn'; 'NP_FaceOut'}; 
+% figure;
+% set(gcf,'color','w');
+% set(gcf, 'Position',  [100, 500, 1000, 400])
+% subplot(1,2,1)
+% barweb(grand_mean_ACC_Corr,grand_withinSE_ACC_Corr);
+% ylim([50 110])
+% ylabel('Median RT (ms)')
+% title('Target Accuracy')
+% legend(conds_plot)
+% subplot(1,2,2)
+% barweb(grand_mean_prop_corr,grand_withinSE_prop_corr);
+% ylim([.9 1])
+% ylabel('Proportion')
+% title('Proportion of Targets responded to')
 
-        %IF GOOFY: P_CCW = preferred_in (new_cond_index = 1;)
-        %IF GOOFY: P_CW = preferred_out (new_cond_index = 2;)
-        %IF GOOFY: NP_CW = nonpreferred_in (new_cond_index = 3;)
-        %IF GOOFY: NP_CCW = nonpreferred_out (new_cond_index = 4;)
-        %IF regular: P_CW = preferred_in (new_cond_index = 1;)
-        %IF regular: P_CCW = preferred_out (new_cond_index = 2;)
-        %IF regular: NP_CCW = nonpreferred_in (new_cond_index = 3;)
-        %IF regular: NP_CW = nonpreferred_out (new_cond_index = 4;)
-        
+%%       
 %side by side plots - PREFERENCE on X Axis
 grand_meanACC_Pref = grand_mean_ACC_Corr(1:2);
 grand_meanACC_NPref = grand_mean_ACC_Corr(3:4);
 grand_wSE_ACC_Pref = grand_withinSE_ACC_Corr(1:2);
 grand_wSE_ACC_NPref = grand_withinSE_ACC_Corr(3:4);
 
-conds_plot = {'FacingIn'; 'FacingOut'}; 
+%side by side plots - FACING on X Axis
+gran_meanACC_Face_IN = grand_mean_ACC_Corr(1:2:3);
+gran_meanACC_Face_OUT = grand_mean_ACC_Corr(2:2:4);
+grand_wSE_ACC_Face_IN = grand_withinSE_ACC_Corr(1:2:3);
+grand_wSE_ACC_Face_OUT = grand_withinSE_ACC_Corr(2:2:4);
+
+%side by side plots - PREFERENCE on X Axis
+conds_plot = {'Facing In'; 'Facing Out'}; 
 figure;
 set(gcf,'color','w');
 set(gcf, 'Position',  [100, 500, 1000, 400])
@@ -266,16 +265,16 @@ subplot(1,2,1)
 barweb(grand_meanACC_Pref,grand_wSE_ACC_Pref);
 ylim([90 100])
 ylabel('Accuracy %')
-xlabel ('Preferred Stance')
-title('Target Accuracy (w/i subject SE)')
+xlabel ('Preferred')
+title('Target Accuracy By Stance')
 legend(conds_plot)
 subplot(1,2,2)
-conds_plot = {'FacingIn'; 'FacingOut'}; 
+conds_plot = {'Facing In'; 'Facing Out'}; 
 barweb(grand_meanACC_NPref,grand_wSE_ACC_NPref);
 ylim([90 100])
 ylabel('Accuracy %')
-xlabel('Non-preferred Stance')
-title('Target Reaction Time (w/i subject SE)')
+xlabel('Non-preferred')
+title('Target Accuracy By Stance')
 legend(conds_plot)
 % subplot(2,2,3)
 % barweb(grand_mean_prop_corr(1:2),grand_withinSE_prop_corr(1:2));
@@ -290,30 +289,26 @@ legend(conds_plot)
 % xlabel ('Non-preferred Stance')
 % title('Proportion of Targets responded to')
 
-%side by side plots - FACING on X Axis
-gran_meanACC_Face_IN = grand_mean_ACC_Corr(1:2:3);
-gran_meanACC_Face_OUT = grand_mean_ACC_Corr(2:2:4);
-grand_wSE_ACC_P_NP_IN = grand_withinSE_ACC_Corr(1:2:3);
-grand_wSE_ACC_P_NP_OUT = grand_withinSE_ACC_Corr(2:2:4);
 
-conds_plot = {'Preferred'; 'Non-Preferred'}; 
+%side by side plots - FACING on X Axis
+conds_plot = {'Preferred Stance'; 'Non-Preferred Stance'}; 
 figure;
 set(gcf,'color','w');
 set(gcf, 'Position',  [100, 500, 1000, 400])
 subplot(1,2,1)
-barweb(gran_meanACC_Face_IN,grand_wSE_ACC_P_NP_IN);
+barweb(gran_meanACC_Face_IN,grand_wSE_ACC_Face_IN);
 ylim([90 100])
 ylabel('Accuracy %')
 xlabel ('Facing In')
-title('Target Accuracy')
+title('Target Accuracy By Face Orientation')
 legend(conds_plot)
 subplot(1,2,2)
-conds_plot = {'Preferred'; 'Non-Preferred'}; 
-barweb(gran_meanACC_Face_OUT,grand_wSE_ACC_P_NP_OUT);
+conds_plot = {'Preferred Stance'; 'Non-Preferred Stance'}; 
+barweb(gran_meanACC_Face_OUT,grand_wSE_ACC_Face_OUT);
 ylim([90 100])
 ylabel('Accuracy %')
 xlabel ('Facing Out')
-title('Target Accuracy')
+title('Target Accuracy By Face Orientation')
 legend(conds_plot)
 
 
