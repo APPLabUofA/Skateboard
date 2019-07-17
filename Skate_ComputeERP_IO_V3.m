@@ -11,6 +11,7 @@ is_goofy = [0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1,...
 
 nsubs = length(subs);
 conds =  {'P_CW';'P_CCW'; 'NP_CW'; 'NP_CCW'};
+
 nconds = length(conds);
 Pathname = 'M:\Data\Skateboard\Winter2019\'; %M:\Data\Skateboard\Winter2019
 [ALLEEG EEG CURRENTSET ALLCOM] = eeglab;
@@ -47,33 +48,60 @@ end
 
 %%
 %generating new variables to plot them
-erp_diff_out = squeeze(erp_out(:,1,:,:,:)-erp_out(:,2,:,:,:));
+%erp_diff_out = squeeze(erp_out(:,1,:,:,:)-erp_out(:,2,:,:,:));
 
 
-if is_goofy(i_sub)
-    erp_P_in_targ = squeeze(erp_out(:,1,:,2,:)); %{'P_CW';'P_CCW'; 'NP_CW'; 'NP_CCW'};
-    erp_P_out_targ = squeeze(erp_out(:,1,:,1,:));
-    erp_NP_in_targ = squeeze(erp_out(:,1,:,3,:));
-    erp_NP_out_targ = squeeze(erp_out(:,1,:,4,:));
-    
-    erp_P_in_stand = squeeze(erp_out(:,2,:,2,:)); %{'P_CW';'P_CCW'; 'NP_CW'; 'NP_CCW'};
-    erp_P_out_stand = squeeze(erp_out(:,2,:,1,:));
-    erp_NP_in_stand = squeeze(erp_out(:,2,:,3,:));
-    erp_NP_out_stand = squeeze(erp_out(:,2,:,4,:));
-    
-elseif ~is_goofy(i_sub)
-    erp_P_in_targ = squeeze(erp_out(:,1,:,1,:)); %{'P_CW';'P_CCW'; 'NP_CW'; 'NP_CCW'};
-    erp_P_out_targ = squeeze(erp_out(:,1,:,2,:));
-    erp_NP_in_targ = squeeze(erp_out(:,1,:,4,:));
-    erp_NP_out_targ = squeeze(erp_out(:,1,:,3,:));
-    
-    erp_P_in_stand = squeeze(erp_out(:,2,:,1,:)); %{'P_CW';'P_CCW'; 'NP_CW'; 'NP_CCW'};
-    erp_P_out_stand = squeeze(erp_out(:,2,:,2,:));
-    erp_NP_in_stand = squeeze(erp_out(:,2,:,4,:));
-    erp_NP_out_stand = squeeze(erp_out(:,2,:,3,:));
-    
+% if is_goofy(i_sub)% this is to separate variables by goofy vs not goofy. 
+%     erp_P_in_targ{1} = squeeze(erp_out(:,1,:,2,logical(is_goofy))); %{'P_CW';'P_CCW'; 'NP_CW'; 'NP_CCW'};
+%     erp_P_out_targ{1} = squeeze(erp_out(:,1,:,1,logical(is_goofy)));
+%     erp_NP_in_targ{1} = squeeze(erp_out(:,1,:,3,logical(is_goofy)));
+%     erp_NP_out_targ{1} = squeeze(erp_out(:,1,:,4,logical(is_goofy)));
+%     
+%     erp_P_in_stand{1} = squeeze(erp_out(:,2,:,2,logical(is_goofy))); %{'P_CW';'P_CCW'; 'NP_CW'; 'NP_CCW'};
+%     erp_P_out_stand{1} = squeeze(erp_out(:,2,:,1,logical(is_goofy)));
+%     erp_NP_in_stand{1} = squeeze(erp_out(:,2,:,3,logical(is_goofy)));
+%     erp_NP_out_stand{1} = squeeze(erp_out(:,2,:,4,logical(is_goofy)));
+%     
+% elseif ~is_goofy(i_sub)
+%     erp_P_in_targ{2} = squeeze(erp_out(:,1,:,1,~logical(is_goofy))); %{'P_CW';'P_CCW'; 'NP_CW'; 'NP_CCW'};
+%     erp_P_out_targ{2} = squeeze(erp_out(:,1,:,2,~logical(is_goofy)));
+%     erp_NP_in_targ{2} = squeeze(erp_out(:,1,:,4,~logical(is_goofy)));
+%     erp_NP_out_targ{2} = squeeze(erp_out(:,1,:,3,~logical(is_goofy)));
+%     
+%     erp_P_in_stand{2} = squeeze(erp_out(:,2,:,1,~logical(is_goofy))); %{'P_CW';'P_CCW'; 'NP_CW'; 'NP_CCW'};
+%     erp_P_out_stand{2} = squeeze(erp_out(:,2,:,2,~logical(is_goofy)));
+%     erp_NP_in_stand{2} = squeeze(erp_out(:,2,:,4,~logical(is_goofy)));
+%     erp_NP_out_stand{2} = squeeze(erp_out(:,2,:,3,~logical(is_goofy)));
+ 
+for i_sub = 1:nsubs
+    if is_goofy(i_sub)
+        erp_P_in_targ(:,:,i_sub) = squeeze(erp_out(:,1,:,2,i_sub)); %{'P_CW';'P_CCW'; 'NP_CW'; 'NP_CCW'};
+        erp_P_out_targ(:,:,i_sub) = squeeze(erp_out(:,1,:,1,i_sub));
+        erp_NP_in_targ(:,:,i_sub) = squeeze(erp_out(:,1,:,3,i_sub));
+        erp_NP_out_targ(:,:,i_sub) = squeeze(erp_out(:,1,:,4,i_sub));
+
+        erp_P_in_stand(:,:,i_sub) = squeeze(erp_out(:,2,:,2,i_sub)); %{'P_CW';'P_CCW'; 'NP_CW'; 'NP_CCW'};
+        erp_P_out_stand(:,:,i_sub) = squeeze(erp_out(:,2,:,1,i_sub));
+        erp_NP_in_stand(:,:,i_sub) = squeeze(erp_out(:,2,:,3,i_sub));
+        erp_NP_out_stand(:,:,i_sub) = squeeze(erp_out(:,2,:,4,i_sub));
+
+    elseif ~is_goofy(i_sub)
+
+        erp_P_in_targ(:,:,i_sub) = squeeze(erp_out(:,1,:,1,i_sub)); %{'P_CW';'P_CCW'; 'NP_CW'; 'NP_CCW'};
+        erp_P_out_targ(:,:,i_sub) = squeeze(erp_out(:,1,:,2,i_sub));
+        erp_NP_in_targ(:,:,i_sub) = squeeze(erp_out(:,1,:,4,i_sub));
+        erp_NP_out_targ(:,:,i_sub) = squeeze(erp_out(:,1,:,3,i_sub));
+
+        erp_P_in_stand(:,:,i_sub) = squeeze(erp_out(:,2,:,1,i_sub)); %{'P_CW';'P_CCW'; 'NP_CW'; 'NP_CCW'};
+        erp_P_out_stand(:,:,i_sub) = squeeze(erp_out(:,2,:,2,i_sub));
+        erp_NP_in_stand(:,:,i_sub) = squeeze(erp_out(:,2,:,4,i_sub));
+        erp_NP_out_stand(:,:,i_sub) = squeeze(erp_out(:,2,:,3,i_sub));
+
+    end
 end
 %%
+%% PLOTS
+
 %preferred facing IN
 figure('Color',[1 1 1]);
 subplot (2,2,1);
@@ -130,4 +158,79 @@ title('Facing Out - Non-Preferred');
 xlabel('Time (ms)');
 ylabel('Voltage (uV)');
 %%
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%%All SUBJECTS side by side plots
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+%preferred facing IN
+figure('Color',[1 1 1]);
+for i_sub = 1:nsubs
+    hold on
+    subplot(6,5,i_sub)
+    boundedline(EEG.times,squeeze(mean(erp_P_in_targ(:,electrode,i_sub),3)),squeeze(std(erp_P_in_targ(:,electrode,i_sub),[],3))./sqrt(nsubs),'r',...
+        EEG.times,squeeze(mean(erp_P_in_stand(:,electrode,i_sub),3)),squeeze(std(erp_P_in_stand(:,electrode,i_sub),[],3))./sqrt(nsubs),'k');
+    set(gca,'Color',[1 1 1]);
+    set(gca,'YDir','reverse');
+    %     legend('Targets','Standards','Location','northwest');
+    axis tight; ylim([-8 12]);
+    line([-200 1000],[0 0],'color','k');
+    line([0 0],[-2.5 8],'color','k');
+    title(['pref-in',subs(i_sub)]);
+    %xlabel('Time (ms)');
+    ylabel('Voltage (uV)');
+end
+
+%non-preferred facing IN
+figure('Color',[1 1 1]);
+for i_sub = 1:nsubs
+    hold on
+    subplot(6,5,i_sub)
+    boundedline(EEG.times,squeeze(mean(erp_NP_in_targ(:,electrode,i_sub),3)),squeeze(std(erp_NP_in_targ(:,electrode,i_sub),[],3))./sqrt(nsubs),'b',...
+        EEG.times,squeeze(mean(erp_NP_in_stand(:,electrode,i_sub),3)),squeeze(std(erp_NP_in_stand(:,electrode,i_sub),[],3))./sqrt(nsubs),'k');
+    set(gca,'Color',[1 1 1]);
+    set(gca,'YDir','reverse');
+    %legend('Targets','Standards','Location','northwest');
+    axis tight; ylim([-8 12]);
+    line([-200 1000],[0 0],'color','k');
+    line([0 0],[-2.5 8],'color','k');
+    title(['nonpref-in',subs(i_sub)]);
+    %xlabel('Facing In NonPref - Time (ms)');
+    ylabel('Voltage (uV)');
+end
+
+%preferred facing OUT
+figure('Color',[1 1 1]);
+for i_sub = 1:nsubs
+    hold on
+    subplot(6,5,i_sub)
+    boundedline(EEG.times,squeeze(mean(erp_P_out_targ(:,electrode,i_sub),3)),squeeze(std(erp_P_out_targ(:,electrode,i_sub),[],3))./sqrt(nsubs),'r',...
+        EEG.times,squeeze(mean(erp_P_out_stand(:,electrode,i_sub),3)),squeeze(std(erp_P_out_stand(:,electrode,i_sub),[],3))./sqrt(nsubs),'k');    set(gca,'Color',[1 1 1]);
+    set(gca,'YDir','reverse');
+    %legend('Targets', 'Standards','Location','northwest');
+    axis tight; ylim([-8 12]);
+    line([-200 1000],[0 0],'color','k');
+    line([0 0],[-2.5 8],'color','k');
+    title(['pref-out',subs(i_sub)]);
+    %xlabel('Facing Out Pref - Time (ms)');
+    ylabel('Voltage (uV)');
+end
+
+%non-preferred out
+figure('Color',[1 1 1]);
+for i_sub = 1:nsubs
+    hold on
+    subplot (6,5,i_sub);
+    boundedline(EEG.times,squeeze(mean(erp_NP_out_targ(:,electrode,i_sub),3)),squeeze(std(erp_NP_out_targ(:,electrode,i_sub),[],3))./sqrt(nsubs),'b',...
+        EEG.times,squeeze(mean(erp_NP_out_stand(:,electrode,i_sub),3)),squeeze(std(erp_NP_out_stand(:,electrode,i_sub),[],3))./sqrt(nsubs),'k');    set(gca,'Color',[1 1 1]);
+    set(gca,'YDir','reverse');
+    %legend('Targets', 'Standards','Location','northwest');
+    axis tight; ylim([-8 12]);
+    line([-200 1000],[0 0],'color','k');
+    line([0 0],[-2.5 8],'color','k');
+    title(['nonpref-out',subs(i_sub)]);
+    %xlabel('Facing Out NonPref - Time (ms)');
+    ylabel('Voltage (uV)');
+end
