@@ -3,13 +3,13 @@ close all
 ccc
 
 exp = 'Skateboard';
-subs = {'100';'101'; '102'};
+subs = {'114'};
 
 nsubs = length(subs);
 conds = {'P_CW';'P_CCW'; 'NP_CW'; 'NP_CCW'};%preferred, clockwise - non-preffered, CCW
 
 nconds = length(conds);
-Pathname = 'M:\Data\Skateboard\';
+Pathname = 'M:\Data\Skateboard\Winter2019';
 
 
 [ALLEEG EEG CURRENTSET ALLCOM] = eeglab;
@@ -30,6 +30,7 @@ for i_sub = 1:nsubs
         for i_chan = 15:18
             hold on;
             plot(EEG.times,EEG.data(i_chan,:)-mean(EEG.data(i_chan,:)));
+            title (conds(i_cond));
         end
     end
 end
