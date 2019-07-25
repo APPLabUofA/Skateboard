@@ -1,19 +1,20 @@
-%%
+
+%CONDITIONS:
+%preferred, clockwise - non-preffered, CCW
+
 %%
 ccc
+%
 exp = 'Skateboard';
 subs = {'100' '102' '103' '104' '107' '108' '109' ...
     '111' '113' '116' '117' '118' '119' ...
     '125' '126'};
-% subs = {'100' '101' '102' '103' '104' '106' '107' '108' '109' ...
-%     '110' '111' '112' '113' '114' '115' '116' '117' '118' '119' ...
-%     '120' '122' '123' '124' '125' '126' '127' '128' '129'};
 
 nsubs = length(subs);
-conds =  {'facing_In';'facing_Out'};
-conds_lab = {'Facing Inside Track'; 'Facing Outside Track'};
+conds =  {'preferred';'non-preferred'};
+conds_lab = {'Preferred Stance'; 'Non-Preferred Stance'};
 nconds = length(conds);
-Pathname = 'M:\Data\Skateboard\Winter2019\'; %M:\Data\Skateboard\Winter2019
+Pathname = 'M:\Data\Skateboard\Winter2019\'; 
 [ALLEEG EEG CURRENTSET ALLCOM] = eeglab;
 
 
@@ -21,9 +22,9 @@ for i_sub = 1:nsubs
     for i_cond = 1:nconds
         
         Filename = [subs{i_sub} '_' exp '_' conds{i_cond}];
-        EEG = pop_loadset('filename',[Filename '_Corrected_Target.set'],'filepath','M:\Data\Skateboard\Winter2019\segments_IO_V2\');
+        EEG = pop_loadset('filename',[Filename '_Corrected_Target.set'],'filepath','M:\Data\Skateboard\Winter2019\segments_P_NP\');
         [ALLEEG, EEG, CURRENTSET] = eeg_store( ALLEEG, EEG, 0 );
-        EEG = pop_loadset('filename',[Filename '_Corrected_Standard.set'],'filepath','M:\Data\Skateboard\Winter2019\segments_IO_V2\');
+        EEG = pop_loadset('filename',[Filename '_Corrected_Standard.set'],'filepath','M:\Data\Skateboard\Winter2019\segments_P_NP\');
         [ALLEEG, EEG, CURRENTSET] = eeg_store( ALLEEG, EEG, 0 );
         
         
@@ -46,7 +47,7 @@ end
 %%
 %grand average plots + difference
 erp_diff_out = squeeze(erp_out(:,1,:,:,:)-erp_out(:,2,:,:,:));
-figure
+figure('Color',[1 1 1]);
 for i_cond = 1:nconds
     switch i_cond
         case 1
@@ -75,7 +76,7 @@ for i_cond = 1:nconds
     set(gca,'Color',[1 1 1]);
     set(gca,'YDir','reverse');
     if i_cond == 2
-        legend('Difference wave','Location','NorthEast');
+        legend('Targets-Standards','Location','NorthEast');
     end
     axis tight; ylim([-8 12]);
     line([-200 1000],[0 0],'color','k');
@@ -92,6 +93,7 @@ end
 %                 DANIEL'S  PLOTS
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Target data on same axis
+
 figure
 for i_cond = 1:nconds
     switch i_cond
@@ -101,27 +103,26 @@ for i_cond = 1:nconds
             colour = 'r';
     end
     
-    boundedline(EEG.times,squeeze(mean(erp_out(:,1,electrode,i_cond,:),5)),squeeze(std(0))./sqrt(nsubs),colour); %std error erp_out(:,1,electrode,i_cond,:),[],5
+    boundedline(EEG.times,squeeze(mean(erp_out(:,1,electrode,i_cond,:),5)),squeeze(std(0))./sqrt(nsubs),colour);erp_out(:,1,electrode,i_cond,:),[],5
     set(gca,'Color',[1 1 1]);
     set(gca,'YDir','reverse');
     axis tight; ylim([-8 12]);
     line([-200 1000],[0 0],'color','k');
     line([0 0],[-2.5 8],'color','k');
-    title('Targets by Orientation');
+    title('Target ERP by Preference');
     xlabel('Time (ms)');
     ylabel('Voltage (uV)');
     
 end
 L(1) = plot(nan, nan, 'b-');
 L(2) = plot(nan, nan, 'r');
-legend(L, {'facing in', 'facing out'})
+legend(L, {'preferred stance', 'non-preferred stance'})
 hold on
-%%
-%%
 
+%%
 %difference on same axis
 erp_diff_out = squeeze(erp_out(:,1,:,:,:)-erp_out(:,2,:,:,:));
-figure
+figure('Color',[1 1 1]);
 for i_cond = 1:nconds
     switch i_cond
         case 1
@@ -131,24 +132,22 @@ for i_cond = 1:nconds
     end
     
     subplot;
-    boundedline(EEG.times,squeeze(mean(erp_diff_out(:,electrode,i_cond,:),4)),squeeze(std(0))./sqrt(nsubs),colour);% std erp_diff_out(:,electrode,i_cond,:),[],4
+    boundedline(EEG.times,squeeze(mean(erp_diff_out(:,electrode,i_cond,:),4)),squeeze(std(erp_diff_out(:,electrode,i_cond,:),[],4))./sqrt(nsubs),colour);
     set(gca,'Color',[1 1 1]);
     set(gca,'YDir','reverse');
     axis tight; ylim([-8 12]);
     line([-200 1000],[0 0],'color','k');
     line([0 0],[-2.5 8],'color','k');
-    title('Difference Wave By Facing Orientation');
+    title('Difference Wave');
     xlabel('Time (ms)');
     ylabel('Voltage (uV)');
-    
 end
-
 L(1) = plot(nan, nan, 'b-');
 L(2) = plot(nan, nan, 'r');
-legend(L, {'dif. wave facing in', 'dif. wave facing out'})
+legend(L, {'dif. wave preferred stance', 'dif. wave non-preferred stance'})
 hold on
 %%
-%%
+
 %SINGLE ERPS FOR INDIVIDUAL COPYING
 
 erp_diff_out = squeeze(erp_out(:,1,:,:,:)-erp_out(:,2,:,:,:));
