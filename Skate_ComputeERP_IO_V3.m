@@ -3,16 +3,10 @@ ccc
 %%
 
 exp = 'Skateboard';
-% subs = {'100' '101' '102' '103' '104' '106' '107' '108' '109' ...
-%     '110' '111' '112' '113' '114' '115' '116' '117' '118' '119' ...
-%     '120' '122' '123' '124' '125' '126' '127' '128' '129'};
-% is_goofy = [0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1,...
-%     0, 0, 0, 0, 0, 1, 1];
-%excluding the bad ones
-subs = {'100' '102' '103' '104' '107' '108' '109' ...
-    '111' '113' '116' '117' '118' '119' ...
-    '125' '126'};
-is_goofy = [0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0,];
+subs = {'100' '101' '102' '103' '104' '106' '107' '108' '109' ...
+     '111' '112' '113' '116' '117' '119' ...
+     '122' '123' '124' '125' '126' '127'};
+is_goofy = [0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0];
 nsubs = length(subs);
 conds =  {'P_CW';'P_CCW'; 'NP_CW'; 'NP_CCW'};
 
@@ -44,8 +38,8 @@ for i_sub = 1:nsubs
         %average over trials (3rd dimension)
         erp_out(:,1,:,i_cond,i_sub) = mean(ALLEEG(1+ 2*((i_sub-1)*nconds+(i_cond-1))).data,3)'; %Targets
         erp_out(:,2,:,i_cond,i_sub) = mean(ALLEEG(2+ 2*((i_sub-1)*nconds+(i_cond-1))).data,3)'; %standards
-        ALLEEG(1+ 2*((i_sub-1)*nconds+(i_cond-1))).setname
-        ALLEEG(2+ 2*((i_sub-1)*nconds+(i_cond-1))).setname
+%         ALLEEG(1+ 2*((i_sub-1)*nconds+(i_cond-1))).setname
+%         ALLEEG(2+ 2*((i_sub-1)*nconds+(i_cond-1))).setname
         
     end
 end
@@ -113,13 +107,15 @@ boundedline(EEG.times,squeeze(mean(erp_P_in_targ(:,electrode,:),3)),squeeze(std(
     EEG.times,squeeze(mean(erp_P_in_stand(:,electrode,:),3)),squeeze(std(erp_P_in_stand(:,electrode,:),[],3))./sqrt(nsubs),'k');
 set(gca,'Color',[1 1 1]);
 set(gca,'YDir','reverse');
-legend('Targets','Standards','Location','northwest');
 axis tight; ylim([-8 12]);
 line([-200 1000],[0 0],'color','k');
 line([0 0],[-2.5 8],'color','k');
 title('Facing In - Preferred');
 xlabel('Time (ms)');
 ylabel('Voltage (uV)');
+L(1) = plot(nan, nan, 'r');
+L(2) = plot(nan, nan, 'k');
+legend(L, {'Targets', 'Standards'})
 
 %non-preferred facing IN
 subplot (2,2,2);
@@ -127,13 +123,15 @@ boundedline(EEG.times,squeeze(mean(erp_NP_in_targ(:,electrode,:),3)),squeeze(std
     EEG.times,squeeze(mean(erp_NP_in_stand(:,electrode,:),3)),squeeze(std(erp_NP_in_stand(:,electrode,:),[],3))./sqrt(nsubs),'k');
 set(gca,'Color',[1 1 1]);
 set(gca,'YDir','reverse');
-legend('Targets','Standards','Location','northwest');
 axis tight; ylim([-8 12]);
 line([-200 1000],[0 0],'color','k');
 line([0 0],[-2.5 8],'color','k');
 title('Facing In - Non-Preferred');
 xlabel('Time (ms)');
 ylabel('Voltage (uV)');
+L(1) = plot(nan, nan, 'b-');
+L(2) = plot(nan, nan, 'k');
+legend(L, {'Targets', 'Standards'})
 
 %preferred facing OUT
 % figure('Color',[1 1 1]);
@@ -141,26 +139,30 @@ subplot (2,2,3);
 boundedline(EEG.times,squeeze(mean(erp_P_out_targ(:,electrode,:),3)),squeeze(std(erp_P_out_targ(:,electrode,:),[],3))./sqrt(nsubs),'r',...
     EEG.times,squeeze(mean(erp_P_out_stand(:,electrode,:),3)),squeeze(std(erp_P_out_stand(:,electrode,:),[],3))./sqrt(nsubs),'k');    set(gca,'Color',[1 1 1]);
 set(gca,'YDir','reverse');
-legend('Targets', 'Standards','Location','northwest');
 axis tight; ylim([-8 12]);
 line([-200 1000],[0 0],'color','k');
 line([0 0],[-2.5 8],'color','k');
 title('Facing Out - Preferred');
 xlabel('Time (ms)');
 ylabel('Voltage (uV)');
+L(1) = plot(nan, nan, 'r');
+L(2) = plot(nan, nan, 'k');
+legend(L, {'Targets', 'Standards'})
 
 %non-preferred out
 subplot (2,2,4);
 boundedline(EEG.times,squeeze(mean(erp_NP_out_targ(:,electrode,:),3)),squeeze(std(erp_NP_out_targ(:,electrode,:),[],3))./sqrt(nsubs),'b',...
     EEG.times,squeeze(mean(erp_NP_out_stand(:,electrode,:),3)),squeeze(std(erp_NP_out_stand(:,electrode,:),[],3))./sqrt(nsubs),'k');    set(gca,'Color',[1 1 1]);
 set(gca,'YDir','reverse');
-legend('Targets', 'Standards','Location','northwest');
 axis tight; ylim([-8 12]);
 line([-200 1000],[0 0],'color','k');
 line([0 0],[-2.5 8],'color','k');
 title('Facing Out - Non-Preferred');
 xlabel('Time (ms)');
 ylabel('Voltage (uV)');
+L(1) = plot(nan, nan, 'b-');
+L(2) = plot(nan, nan, 'k');
+legend(L, {'Targets', 'Standards'})
 %%
 %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -154,13 +154,13 @@ for i_cond = 1:nconds
     end
     
     subplot;
-    boundedline(EEG.times,squeeze(mean(erp_diff_out(:,electrode,i_cond,:),4)),squeeze(std(erp_diff_out(:,electrode,i_cond,:),[],4))./sqrt(nsubs),colour);
+    boundedline(EEG.times,squeeze(mean(erp_diff_out(:,electrode,i_cond,:),4)),squeeze(std(0))./sqrt(nsubs),colour);%erp_diff_out(:,electrode,i_cond,:),[],4
     set(gca,'Color',[1 1 1]);
     set(gca,'YDir','reverse');
     axis tight; ylim([-8 12]);
     line([-200 1000],[0 0],'color','k');
     line([0 0],[-2.5 8],'color','k');
-    title('Difference Wave');
+    title('Difference-Wave');
     xlabel('Time (ms)');
     ylabel('Voltage (uV)');
 end

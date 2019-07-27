@@ -6,9 +6,9 @@
 ccc
 %
 exp = 'Skateboard';
-subs = {'100' '102' '103' '104' '107' '108' '109' ...
-    '111' '113' '116' '117' '118' '119' ...
-    '125' '126'};
+subs = {'100' '101' '102' '103' '104' '106' '107' '108' '109' ...
+     '111' '112' '113' '116' '117' '119' ...
+     '122' '123' '124' '125' '126' '127'};
 
 nsubs = length(subs);
 conds =  {'preferred';'non-preferred'};
@@ -61,9 +61,6 @@ for i_cond = 1:nconds
         EEG.times,squeeze(mean(erp_out(:,2,electrode,i_cond,:),5)),squeeze(std(erp_out(:,2,electrode,i_cond,:),[],5))./sqrt(nsubs),'k');
     set(gca,'Color',[1 1 1]);
     set(gca,'YDir','reverse');
-    if i_cond == 2
-        legend('Targets','Standards','Location','NorthEast');
-    end
     axis tight; ylim([-8 12]);
     line([-200 1000],[0 0],'color','k');
     line([0 0],[-2.5 8],'color','k');
@@ -75,18 +72,17 @@ for i_cond = 1:nconds
     boundedline(EEG.times,squeeze(mean(erp_diff_out(:,electrode,i_cond,:),4)),squeeze(std(erp_diff_out(:,electrode,i_cond,:),[],4))./sqrt(nsubs),colour);
     set(gca,'Color',[1 1 1]);
     set(gca,'YDir','reverse');
-    if i_cond == 2
-        legend('Targets-Standards','Location','NorthEast');
-    end
     axis tight; ylim([-8 12]);
     line([-200 1000],[0 0],'color','k');
     line([0 0],[-2.5 8],'color','k');
-    title(conds_lab{i_cond});
+    title('Difference Wave');
     xlabel('Time (ms)');
     ylabel('Voltage (uV)');
     
 end
-
+L(1) = plot(nan, nan, 'b-');
+L(2) = plot(nan, nan, 'r');
+legend(L, {'preferred stance', 'non-preferred stance'})
 %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
@@ -117,7 +113,6 @@ end
 L(1) = plot(nan, nan, 'b-');
 L(2) = plot(nan, nan, 'r');
 legend(L, {'preferred stance', 'non-preferred stance'})
-hold on
 
 %%
 %difference on same axis
@@ -132,13 +127,13 @@ for i_cond = 1:nconds
     end
     
     subplot;
-    boundedline(EEG.times,squeeze(mean(erp_diff_out(:,electrode,i_cond,:),4)),squeeze(std(erp_diff_out(:,electrode,i_cond,:),[],4))./sqrt(nsubs),colour);
+    boundedline(EEG.times,squeeze(mean(erp_diff_out(:,electrode,i_cond,:),4)),squeeze(std(0))./sqrt(nsubs),colour);%erp_diff_out(:,electrode,i_cond,:),[],4
     set(gca,'Color',[1 1 1]);
     set(gca,'YDir','reverse');
     axis tight; ylim([-8 12]);
     line([-200 1000],[0 0],'color','k');
     line([0 0],[-2.5 8],'color','k');
-    title('Difference Wave');
+    title('Difference Wave by Preference');
     xlabel('Time (ms)');
     ylabel('Voltage (uV)');
 end

@@ -7,8 +7,8 @@ ccc
 %
 exp = 'Skateboard';
 subs = {'100' '101' '102' '103' '104' '106' '107' '108' '109' ...
-    '110' '111' '112' '113' '114' '115' '116' '117' '118' '119' ...
-    '120' '122' '123' '124' '125' '126' '127' '128' '129'};
+     '111' '112' '113' '116' '117' '119' ...
+     '122' '123' '124' '125' '126' '127'};
 
 nsubs = length(subs); 
 conds =  {'P_CW';'P_CCW'; 'NP_CW'; 'NP_CCW'};
@@ -66,9 +66,6 @@ for i_cond = 1:nconds
         EEG.times,squeeze(mean(erp_out(:,2,electrode,i_cond,:),5)),squeeze(std(erp_out(:,2,electrode,i_cond,:),[],5))./sqrt(nsubs),'k');
         set(gca,'Color',[1 1 1]);
         set(gca,'YDir','reverse');
-        if i_cond == 2
-            legend('Targets','Standards','Location','NorthEast');
-        end
         axis tight; ylim([-8 12]);
         line([-200 1000],[0 0],'color','k');
         line([0 0],[-2.5 8],'color','k');
@@ -80,18 +77,54 @@ for i_cond = 1:nconds
         boundedline(EEG.times,squeeze(mean(erp_diff_out(:,electrode,i_cond,:),4)),squeeze(std(erp_diff_out(:,electrode,i_cond,:),[],4))./sqrt(nsubs),colour);
         set(gca,'Color',[1 1 1]);
         set(gca,'YDir','reverse'); 
-        if i_cond == 2
-            legend('Targets-Standards','Location','NorthEast'); 
-        end
         axis tight; ylim([-8 12]);
         line([-200 1000],[0 0],'color','k');
         line([0 0],[-2.5 8],'color','k');
-        title(conds_lab{i_cond});
+        title('Difference Wave');
         xlabel('Time (ms)');
         ylabel('Voltage (uV)');
         
 end
+L(1) = plot(nan, nan, 'b-');
+L(2) = plot(nan, nan, 'r');
+L(3) = plot(nan, nan, 'g');
+L(4) = plot(nan, nan, 'm');
+legend(L, {'Pref CW'; 'Pref CCW'; 'Non-pref CW'; 'Non-pref CCW'}, 'location', 'northwest')
+%%
+%%
+%difference waves on same axis
+erp_diff_out = squeeze(erp_out(:,1,:,:,:)-erp_out(:,2,:,:,:));
+figure('Color',[1 1 1]);
+for i_cond = 1:nconds
+    switch i_cond
+        case 1
+            colour = 'b';
+        case 2
+            colour = 'r';
+        case 3
+            colour = 'g';
+        case 4
+            colour = 'm';
+    end
+    
+    subplot;
+    boundedline(EEG.times,squeeze(mean(erp_diff_out(:,electrode,i_cond,:),4)),squeeze(std(0))./sqrt(nsubs),colour);
+    set(gca,'Color',[1 1 1]);
+    set(gca,'YDir','reverse');
+    axis tight; ylim([-8 12]);
+    line([-200 1000],[0 0],'color','k');
+    line([0 0],[-2.5 8],'color','k');
+    title('Difference Wave');
+    xlabel('Time (ms)');
+    ylabel('Voltage (uV)');
+end
+L(1) = plot(nan, nan, 'b-');
+L(2) = plot(nan, nan, 'r');
+L(3) = plot(nan, nan, 'g');
+L(4) = plot(nan, nan, 'm');
+legend(L, {'preferred CW','preferred CCW' 'non-preferred CW' 'non-preferred CW'},'Location','northwest')
 
+%%
 
 %% 
 %Difference Waves at any given electrodes. 

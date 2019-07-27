@@ -2,12 +2,9 @@
 %%
 ccc
 exp = 'Skateboard';
-subs = {'100' '102' '103' '104' '107' '108' '109' ...
-    '111' '113' '116' '117' '118' '119' ...
-    '125' '126'};
-% subs = {'100' '101' '102' '103' '104' '106' '107' '108' '109' ...
-%     '110' '111' '112' '113' '114' '115' '116' '117' '118' '119' ...
-%     '120' '122' '123' '124' '125' '126' '127' '128' '129'};
+subs = {'100' '101' '102' '103' '104' '106' '107' '108' '109' ...
+     '111' '112' '113' '116' '117' '119' ...
+     '122' '123' '124' '125' '126' '127'};
 
 nsubs = length(subs);
 conds =  {'facing_In';'facing_Out'};
@@ -60,9 +57,6 @@ for i_cond = 1:nconds
         EEG.times,squeeze(mean(erp_out(:,2,electrode,i_cond,:),5)),squeeze(std(erp_out(:,2,electrode,i_cond,:),[],5))./sqrt(nsubs),'k');
     set(gca,'Color',[1 1 1]);
     set(gca,'YDir','reverse');
-    if i_cond == 2
-        legend('Targets','Standards','Location','NorthEast');
-    end
     axis tight; ylim([-8 12]);
     line([-200 1000],[0 0],'color','k');
     line([0 0],[-2.5 8],'color','k');
@@ -74,17 +68,18 @@ for i_cond = 1:nconds
     boundedline(EEG.times,squeeze(mean(erp_diff_out(:,electrode,i_cond,:),4)),squeeze(std(erp_diff_out(:,electrode,i_cond,:),[],4))./sqrt(nsubs),colour);
     set(gca,'Color',[1 1 1]);
     set(gca,'YDir','reverse');
-    if i_cond == 2
-        legend('Difference wave','Location','NorthEast');
-    end
     axis tight; ylim([-8 12]);
     line([-200 1000],[0 0],'color','k');
     line([0 0],[-2.5 8],'color','k');
-    title(conds_lab{i_cond});
+    title('Diference Wave');
     xlabel('Time (ms)');
     ylabel('Voltage (uV)');
     
 end
+L(1) = plot(nan, nan, 'b-');
+L(2) = plot(nan, nan, 'r');
+legend(L, {'facing in', 'facing out'})
+
 
 %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
