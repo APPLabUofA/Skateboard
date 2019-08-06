@@ -190,6 +190,25 @@ for i_cond = 1:nconds
     
 end
 %%
+%ttest
+erp_diff_out(:,electrode,i_cond,:)
+
+time_window = find(EEG.times>375,1)-1:find(EEG.times>575,1)-2;
+
+%%%timepoints X events X electrodes X conditions X participants%%%%
+
+%%%compare standards between two conditions%%%
+% [h p ci stat] = ttest(squeeze(mean(erp_out(600:800,1,electrode,1,:),1)),squeeze(mean(erp_out(600:800,1,electrode,2,:),1)),.05,'both',1);
+ [h p ci stat] = ttest(squeeze(mean(erp_diff_out(time_window,electrode,1,:),1)),squeeze(mean(erp_diff_out(time_window,electrode,2,:),1)),.05,'both',1)
+
+%%%compare 1 condition to zero (to see if P3 is signficant for example)%%%
+% [h p ci stat] = ttest(squeeze(mean(erp_out(600:800,1,electrode,1,:),1)),0,.05,'right',1)
+ %actual ttezst on dif wave from 0:
+ [h p ci stat] = ttest(squeeze(mean(erp_diff_out(time_window,electrode,i_cond,:),1)),0,.05,'right',1)
+
+squeeze (mean(erp_diff_out(time_window,electrode,1,:),1))
+squeeze (mean(erp_diff_out(time_window,electrode,2,:),1))
+%%
 
 % for i_set = 1:48; trial_count(i_set) = ALLEEG(i_set).trials; end
 % trial_count = reshape(trial_count,[2,3,8]);
