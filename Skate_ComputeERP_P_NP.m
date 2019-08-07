@@ -191,15 +191,24 @@ for i_cond = 1:nconds
 end
 %%
 %ttest
-erp_diff_out(:,electrode,i_cond,:)
+%erp_diff_out(:,electrode,i_cond,:)
 
 time_window = find(EEG.times>375,1)-1:find(EEG.times>575,1)-2;
 
 %%%timepoints X events X electrodes X conditions X participants%%%%
 
-%%%compare standards between two conditions%%%
-% [h p ci stat] = ttest(squeeze(mean(erp_out(600:800,1,electrode,1,:),1)),squeeze(mean(erp_out(600:800,1,electrode,2,:),1)),.05,'both',1);
- [h p ci stat] = ttest(squeeze(mean(erp_diff_out(time_window,electrode,1,:),1)),squeeze(mean(erp_diff_out(time_window,electrode,2,:),1)),.05,'both',1)
+%%%compare between two conditions%%%
+%targs vs standards PNP all subs
+ [h p ci stat] = ttest(squeeze(mean(erp_out(time_window,1,electrode,1,:),1)),squeeze(mean(erp_out(time_window,1,electrode,2,:),1)),.05,'both',1)
+ 
+ %%%compare targets vs standards preferred cond%%%
+ [h p ci stat] = ttest(squeeze(mean(erp_out(time_window,1,electrode,1,:),1)),squeeze(mean(erp_out(time_window,2,electrode,1,:),1)),.05,'both',1)
+ %%%compare targets vs standards non-preferred cond 2%%%
+ [h p ci stat] = ttest(squeeze(mean(erp_out(time_window,1,electrode,2,:),1)),squeeze(mean(erp_out(time_window,2,electrode,2,:),1)),.05,'both',1)
+
+ 
+ %testing difference-wave between conditions 
+[h p ci stat] = ttest(squeeze(mean(erp_diff_out(time_window,electrode,1,:),1)),squeeze(mean(erp_diff_out(time_window,electrode,2,:),1)),.05,'both',1)
 
 %%%compare 1 condition to zero (to see if P3 is signficant for example)%%%
 % [h p ci stat] = ttest(squeeze(mean(erp_out(600:800,1,electrode,1,:),1)),0,.05,'right',1)
