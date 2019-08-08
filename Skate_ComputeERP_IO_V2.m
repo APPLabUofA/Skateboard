@@ -195,6 +195,7 @@ end
 %erp_diff_out(:,electrode,i_cond,:)
 
 time_window = find(EEG.times>375,1)-1:find(EEG.times>575,1)-2;
+erp_diff_out = squeeze(erp_out(:,1,:,:,:)-erp_out(:,2,:,:,:));
 
 %%%timepoints X events X electrodes X conditions X participants%%%%
 
@@ -213,7 +214,8 @@ time_window = find(EEG.times>375,1)-1:find(EEG.times>575,1)-2;
 %%%compare 1 condition to zero (to see if P3 is signficant for example)%%%
 % [h p ci stat] = ttest(squeeze(mean(erp_out(600:800,1,electrode,1,:),1)),0,.05,'right',1)
 %  COMPARING DIFFERENCE WAVE OF IN VS OUT:
- [h p ci stat] = ttest(squeeze(mean(erp_diff_out(time_window,electrode,i_cond,:),1)),0,.05,'right',1)
+ [h p ci stat] = ttest(squeeze(mean(erp_diff_out(time_window,electrode,1,:),1)),0,.05,'right',1)
+ [h p ci stat] = ttest(squeeze(mean(erp_diff_out(time_window,electrode,2,:),1)),0,.05,'right',1)
 
 squeeze (mean(erp_diff_out(time_window,electrode,1,:),1))
 squeeze (mean(erp_diff_out(time_window,electrode,2,:),1))
