@@ -10,7 +10,11 @@ subs = {'100'}; %to test on just one sub
 nsubs = length(subs); 
 conds =  {'P_CW';'P_CCW'; 'NP_CW'; 'NP_CCW'};
 conds_lab = {'Preferred Clockwise'; 'Preferred Counterclockwise'; 'Non-preferred Clockwise'; 'Non-preferred Counterclockwise'};
+<<<<<<< Updated upstream
 %{'P_CW';'P_CCW'; 'NP_CW'; 'NP_CCW'};
+=======
+pref_lab = {'Preferred'; 'Non-Preferred'};
+>>>>>>> Stashed changes
 nconds = length(conds);
 Pathname = 'M:\Data\Skateboard\Winter2019/';
 [ALLEEG EEG CURRENTSET ALLCOM] = eeglab;
@@ -38,7 +42,7 @@ freqs = [1:1:30]; %wavelet frequencies
 power_out = [];
 i_count = 0;
 n_electrode = EEG.nbchan;
-for i_sub = 1:nsubs 
+for i_sub = 1:nsubs
     fprintf(['Subject - ' num2str(i_sub) '. \n']);
     for i_cond = 1:nconds
         fprintf(['Condition - ' conds_lab{i_cond} '. \n']);
@@ -54,10 +58,11 @@ for i_sub = 1:nsubs
             
         end
         power_out(:,:,:,i_sub,i_cond) = nanmean(power,4); %save the power data
- 
+        
         
     end
- 
+    power_out_p(:,:,:,i_sub) = nanmean(power_out(:,:,:,i_sub,1:2),5); %save the power data
+    power_out_np(:,:,:,i_sub) = nanmean(power_out(:,:,:,i_sub,3:4),5); %save the power data
 end
 
 
@@ -88,6 +93,7 @@ ylabel('Frequency (Hz)');
 
 %% Collapse over time to get power spectra, average over subjects
 
+<<<<<<< Updated upstream
 power_spectra = squeeze(mean(power_out(:,:,:,:,:),2)); %collapse over time can pick time range here in 2nd dim.
 power_spectra_std = squeeze(std(power_out(:,:,:,:,:),[],2)); 
 
@@ -100,6 +106,33 @@ else %if only one subject just plot mean and std over trials
     mean_power_out = power_spectra;
     stderr_power_out = power_spectra_std;
 end
+=======
+
+power_spectra = squeeze(mean(power_out,2)); %collapse over time can pick time range here in 2nd dim.
+%frequency x electrode x subject x condition
+power_spectra_p = squeeze(mean(power_out_p,2));
+power_spectra_np = squeeze(mean(power_out_np,2));
+
+power_spectra_diff = squeeze( power_spectra(:,left_electrode,:,:)-...
+                            power_spectra(:,right_electrode,:,:));
+
+power_spectra_diff_p = squeeze( power_spectra_p(:,left_electrode,:)-...
+                            power_spectra_p(:,right_electrode,:));
+
+power_spectra_diff_np = squeeze( power_spectra_np(:,left_electrode,:)-...
+                            power_spectra_np(:,right_electrode,:));
+                        
+                        
+power_spectra_diff_mean = squeeze(mean(power_spectra_diff,2));
+power_spectra_diff_se = squeeze(std(power_spectra_diff,[],2)/sqrt(nsubs));
+>>>>>>> Stashed changes
+
+power_spectra_diff_mean_p = squeeze(mean(power_spectra_diff_p,2));
+power_spectra_diff_se_p = squeeze(std(power_spectra_diff_p,[],2)/sqrt(nsubs));
+
+power_spectra_diff_mean_np = squeeze(mean(power_spectra_diff_np,2));
+power_spectra_diff_se_np = squeeze(std(power_spectra_diff_np,[],2)/sqrt(nsubs));
+
 
 %% Plot spectra accross conditions
 figure;
@@ -119,6 +152,18 @@ ylabel('Power (uV^2)');
 title('Baseline power Standard Trials Electrode Left');
 legend(conds_lab,'Location','NorthEast');
 
+
+%plot spectra by preference 
+figure;
+boundedline (freqs, power_spectra_diff_mean_p, power_spectra_diff_se_p,'r',...
+             freqs, power_spectra_diff_mean_np, power_spectra_diff_se_np,'b');
+axis tight
+xlim([0 30])
+xlabel('Frequency (Hz)');
+ylabel('Power (uV^2)');
+title('Power (Left - Right)');
+legend(pref_lab,'Location','NorthEast');         
+             
 
 
 
