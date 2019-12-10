@@ -16,7 +16,7 @@ exp = 'Skateboard';
 %             0,	0,	0,	1,	0,	0,	0,	0,	0,	1,	1,	0,	0,	0,	1,	1, 0, 1, 0];
 
 
-%Full list minus subs that have loud FZ 
+% %Full list minus subs that have loud FZ 
 subs = {'100'	'101'	'102'	'103'	'104'	'106'	'107'	'108'	'109'	'110'...
     '111'	'112'	'113'	'114'	'115'	'116'	'117'	'119'	'120'...
     '122'	'123'	'125'	'126'	'127'	'129'	'130'...
@@ -31,9 +31,9 @@ pref_lab = {'Preferred'; 'Non-Preferred'};
 facing_lab = {'Facing Inside'; 'Facing Outside'};
 nconds = length(conds);
 Pathname = 'M:\Data\Skateboard\Winter2019\'; %M:\Data\Skateboard\Winter2019
-[ALLEEG EEG CURRENTSET ALLCOM] = eeglab;
+[ALLEEG, EEG, CURRENTSET, ALLCOM] = eeglab;
 
-
+%%
 for i_sub = 1:nsubs
     for i_cond = 1:nconds
         
@@ -49,7 +49,7 @@ end
 eeglab redraw
 %%
 %subject erps
-electrode = 15;%this is PZ in this electrode map
+electrode = 13;%this is PZ in this electrode map
 %electrode = [13,14]; %to average for electrodes 
 
 erp_out = [];
@@ -129,11 +129,11 @@ end
 %         axis tight; ylim([-20 20]);
 %         line([-200 1000],[0 0],'color','k');
 %         line([0 0],[-2.5 8],'color','k');
-%         title({i_sub});
+%         title(subs{i_sub});
 %         xlabel('Time (ms)');
 %         ylabel('Voltage (uV)');
 %  end
-% 
+
 
 %%
 %                   by preference
@@ -142,10 +142,11 @@ end
 erp_diff_out_p = squeeze(erp_out_p(:,1,:,:)-erp_out_p(:,2,:,:));
 erp_diff_out_np = squeeze(erp_out_np(:,1,:,:)-erp_out_np(:,2,:,:));
 
-figure
+figure;
 subplot(1,3,1);
     boundedline(EEG.times,squeeze(mean(erp_out_p(:,1,electrode,:),4)),squeeze(std(erp_out_p(:,1,electrode,:),[],4))./sqrt(nsubs),'r',...
-        EEG.times,squeeze(mean(erp_out_p(:,2,electrode,:),4)),squeeze(std(erp_out_p(:,2,electrode,:),[],4))./sqrt(nsubs),'k');    set(gca,'Color',[1 1 1]);
+        EEG.times,squeeze(mean(erp_out_p(:,2,electrode,:),4)),squeeze(std(erp_out_p(:,2,electrode,:),[],4))./sqrt(nsubs),'k');   
+    set(gca,'Color',[1 1 1]);
     set(gca,'YDir','reverse');
     axis tight; ylim([-8 12]);
     line([-200 1000],[0 0],'color','k');
@@ -180,6 +181,59 @@ subplot(1,3,3);
     xlabel('Time (ms)');
     ylabel('Voltage (uV)');
     legend({'preferred stance', 'non-preferred stance'},'Location','northwest')
+
+%%    
+%Targets on same axis by preference
+figure;
+boundedline(EEG.times,squeeze(mean(erp_out_p(:,1,electrode,:),4)),squeeze(std(erp_out_p(:,1,electrode,:),[],4))./sqrt(nsubs),'r',...
+        EEG.times,squeeze(mean(erp_out_np(:,1,electrode,:),4)),squeeze(std(erp_out_np(:,1,electrode,:),[],4))./sqrt(nsubs),'b');  
+    
+set(gca,'Color',[1 1 1]);
+set(gca,'YDir','reverse');
+axis tight; ylim([-8 12]);
+line([-200 1000],[0 0],'color','k');
+line([0 0],[-2.5 8],'color','k');
+title('Target Tones');
+xlabel('Time (ms)');
+ylabel('Voltage (uV)');
+L(1) = plot(nan, nan, 'r');
+L(2) = plot(nan, nan, 'b');
+legend(L, {'preferred stance', 'non-preferred stance'},'Location','northeast')
+
+%ttest for targets by preference at N1
+time_window = find(EEG.times>125,1)-1:find(EEG.times>225,1)-2;
+[h p ci stat] = ttest(squeeze(mean(erp_out_p(time_window,1,electrode,:),1)),squeeze(mean(erp_out_np(time_window,1,electrode,:),1)),.05,'both',1) 
+
+%ttest for targets by preference at P2
+time_window = find(EEG.times>225,1)-1:find(EEG.times>325,1)-2;
+[h p ci stat] = ttest(squeeze(mean(erp_out_p(time_window,1,electrode,:),1)),squeeze(mean(erp_out_np(time_window,1,electrode,:),1)),.05,'both',1) 
+
+%Standards on same axis by preference
+figure;
+boundedline(EEG.times,squeeze(mean(erp_out_p(:,2,electrode,:),4)),squeeze(std(erp_out_p(:,2,electrode,:),[],4))./sqrt(nsubs),'r',...
+        EEG.times,squeeze(mean(erp_out_np(:,2,electrode,:),4)),squeeze(std(erp_out_np(:,2,electrode,:),[],4))./sqrt(nsubs),'b');  
+set(gca,'Color',[1 1 1]);
+set(gca,'YDir','reverse');
+axis tight; ylim([-8 12]);
+line([-200 1000],[0 0],'color','k');
+line([0 0],[-10 15],'color','k');
+title('Standard Tones');
+xlabel('Time (ms)');
+ylabel('Voltage (uV)');
+
+L(1) = plot(nan, nan, 'r');
+L(2) = plot(nan, nan, 'b');
+legend(L, {'preferred stance', 'non-preferred stance'},'Location','northeast')
+
+
+%ttest for targets by preference at N1
+time_window = find(EEG.times>125,1)-1:find(EEG.times>225,1)-2;
+[h p ci stat] = ttest(squeeze(mean(erp_out_p(time_window,2,electrode,:),1)),squeeze(mean(erp_out_np(time_window,2,electrode,:),1)),.05,'both',1) 
+
+%ttest for targets by preference at P2
+time_window = find(EEG.times>225,1)-1:find(EEG.times>325,1)-2;
+[h p ci stat] = ttest(squeeze(mean(erp_out_p(time_window,2,electrode,:),1)),squeeze(mean(erp_out_np(time_window,2,electrode,:),1)),.05,'both',1) 
+
  %%   
 %  %Averaging between 2 electrodes
 %  electrode = [13, 14];
@@ -250,7 +304,7 @@ subplot(1,3,1);
 subplot(1,3,2);
 
     boundedline(EEG.times,squeeze(mean(erp_out_face_out(:,1,electrode,:),4)),squeeze(std(erp_out_face_out(:,1,electrode,:),[],4))./sqrt(nsubs),'b',...
-        EEG.times,squeeze(mean(erp_out_face_out(:,2,electrode,:),4)),squeeze(std(erp_out_face_out(:,2,electrode,i_cond,:),[],4))./sqrt(nsubs),'k');    
+        EEG.times,squeeze(mean(erp_out_face_out(:,2,electrode,:),4)),squeeze(std(erp_out_face_out(:,2,electrode,:),[],4))./sqrt(nsubs),'k');    
     set(gca,'Color',[1 1 1]);
     set(gca,'YDir','reverse');
     axis tight; ylim([-8 12]);
@@ -279,6 +333,58 @@ subplot(1,3,3);
     ylabel('Voltage (uV)');
     legend({'Facing Inside', 'Facing Outside'},'Location','northwest')
     
+    
+%Targets on same axis by facing orientation
+figure;
+boundedline(EEG.times,squeeze(mean(erp_out_face_in(:,1,electrode,:),4)),squeeze(std(erp_out_face_in(:,1,electrode,:),[],4))./sqrt(nsubs),'r',...
+         EEG.times,squeeze(mean(erp_out_face_out(:,1,electrode,:),4)),squeeze(std(erp_out_face_out(:,1,electrode,:),[],4))./sqrt(nsubs),'b')
+
+set(gca,'Color',[1 1 1]);
+set(gca,'YDir','reverse');
+axis tight; ylim([-8 12]);
+line([-200 1000],[0 0],'color','k');
+line([0 0],[-2.5 8],'color','k');
+title('Target Tones');
+xlabel('Time (ms)');
+ylabel('Voltage (uV)');
+L(1) = plot(nan, nan, 'r');
+L(2) = plot(nan, nan, 'b');
+legend(L, {'Facing Inside', 'Facing Outside'},'Location','northeast')
+
+    
+%ttest for targets by preference at N1
+time_window = find(EEG.times>125,1)-1:find(EEG.times>225,1)-2;
+[h p ci stat] = ttest(squeeze(mean(erp_out_p(time_window,1,electrode,:),1)),squeeze(mean(erp_out_np(time_window,1,electrode,:),1)),.05,'both',1) 
+
+%ttest for targets by preference at P2
+time_window = find(EEG.times>225,1)-1:find(EEG.times>325,1)-2;
+[h p ci stat] = ttest(squeeze(mean(erp_out_p(time_window,1,electrode,:),1)),squeeze(mean(erp_out_np(time_window,1,electrode,:),1)),.05,'both',1) 
+
+%Standards on same axis
+figure;
+boundedline(EEG.times,squeeze(mean(erp_out_face_in(:,2,electrode,:),4)),squeeze(std(erp_out_face_in(:,2,electrode,:),[],4))./sqrt(nsubs),'r',...
+         EEG.times,squeeze(mean(erp_out_face_out(:,2,electrode,:),4)),squeeze(std(erp_out_face_out(:,2,electrode,:),[],4))./sqrt(nsubs),'b')  
+set(gca,'Color',[1 1 1]);
+set(gca,'YDir','reverse');
+axis tight; ylim([-8 12]);
+line([-200 1000],[0 0],'color','k');
+line([0 0],[-10 15],'color','k');
+title('Standard Tones');
+xlabel('Time (ms)');
+ylabel('Voltage (uV)');
+
+L(1) = plot(nan, nan, 'r');
+L(2) = plot(nan, nan, 'b');
+legend(L, {'Facing Inside', 'Facing Outside'},'Location','northeast')
+
+
+%ttest for targets by preference at N1
+time_window = find(EEG.times>125,1)-1:find(EEG.times>225,1)-2;
+[h p ci stat] = ttest(squeeze(mean(erp_out_p(time_window,2,electrode,:),1)),squeeze(mean(erp_out_np(time_window,2,electrode,:),1)),.05,'both',1) 
+
+%ttest for targets by preference at P2
+time_window = find(EEG.times>225,1)-1:find(EEG.times>325,1)-2;
+[h p ci stat] = ttest(squeeze(mean(erp_out_p(time_window,2,electrode,:),1)),squeeze(mean(erp_out_np(time_window,2,electrode,:),1)),.05,'both',1) 
     %%
 %     %Averaging between 2 electrodes
 %  electrode = [13, 14];
@@ -421,6 +527,13 @@ xlabel('Time (ms)');
 ylabel('Voltage (uV)');
 legend('Clockwise', 'Counterclock-wise','Location','northwest')
 
+%t-test for targets N1 by clock orientation
+time_window = find(EEG.times>125,1)-1:find(EEG.times>225,1)-2;
+[h p ci stat] = ttest(squeeze(mean(erp_out_CW(time_window,1,electrode,:),1)),squeeze(mean(erp_out_CCW(time_window,1,electrode,:),1)),.05,'both',1) 
+
+%ttest for targets by preference at P2
+time_window = find(EEG.times>200,1)-1:find(EEG.times>300,1)-2;
+[h p ci stat] = ttest(squeeze(mean(erp_out_CW(time_window,1,electrode,:),1)),squeeze(mean(erp_out_CCW(time_window,1,electrode,:),1)),.05,'both',1) 
 
 %%
 % TESTING FOR DIFFERENCES
