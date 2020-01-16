@@ -49,7 +49,7 @@ end
 eeglab redraw
 %%
 %subject erps
-electrode = 13;%this is PZ in this electrode map
+electrode = 15;%this is PZ in this electrode map
 %electrode = [13,14]; %to average for electrodes 
 
 erp_out = [];
@@ -496,7 +496,7 @@ L(3) = plot(nan, nan, 'g');
 L(4) = plot(nan, nan, 'm');
 legend(L, {'preferred stance', 'non-preferred stance','Facing Inside', 'Facing Outside'},'Location','northwest')
     
-
+%%
 %CLOCKWISE VS COUNTERCLOCKWISE STANDARDS AND TARGETS ON SAME AXIS
 
 
@@ -534,6 +534,40 @@ time_window = find(EEG.times>125,1)-1:find(EEG.times>225,1)-2;
 %ttest for targets by preference at P2
 time_window = find(EEG.times>200,1)-1:find(EEG.times>300,1)-2;
 [h p ci stat] = ttest(squeeze(mean(erp_out_CW(time_window,1,electrode,:),1)),squeeze(mean(erp_out_CCW(time_window,1,electrode,:),1)),.05,'both',1) 
+
+%comparing clock orientation in difference waves 
+erp_diff_out_CW = squeeze(erp_out_CW(:,1,:,:)-erp_out_CW(:,2,:,:));
+erp_diff_out_CCW = squeeze(erp_out_CCW(:,1,:,:)-erp_out_CCW(:,2,:,:));
+
+figure;
+boundedline(EEG.times,squeeze(mean(erp_diff_out_CW(:,electrode,:),3)),squeeze(std(erp_diff_out_CW(:,electrode,:),[],3))./sqrt(nsubs),'r',...
+    EEG.times,squeeze(mean(erp_diff_out_CCW(:,electrode,:),3)),squeeze(std(erp_diff_out_CCW(:,electrode,:),[],3))./sqrt(nsubs),'b');
+set(gca,'Color',[1 1 1]);
+set(gca,'YDir','reverse');
+axis tight; ylim([-8 12]);
+line([-200 1000],[0 0],'color','k');
+line([0 0],[-2.5 8],'color','k');
+title('Clockwise vs CCW at Fz');
+xlabel('Time (ms)');
+ylabel('Voltage (uV)');
+legend('Clockwise', 'Counterclock-wise','Location','northwest')
+
+% TESTING FOR DIFFERENCES
+time_window = find(EEG.times>300,1)-1:find(EEG.times>500,1)-2;
+[h p ci stat] = ttest(squeeze(mean(erp_diff_out_CW(time_window,electrode,:),1)),squeeze(mean(erp_diff_out_CCW(time_window,electrode,:),1)),.05,'both',1) 
+
+%find peak
+figure;
+boundedline(EEG.times,squeeze(mean(mean(erp_diff_out(:,electrode,:,:),3),4)), squeeze(std(0))./sqrt(nsubs),'m'),...
+    
+set(gca,'Color',[1 1 1]);
+set(gca,'YDir','reverse');
+axis tight; ylim([-8 12]);
+line([-200 1000],[0 0],'color','k');
+line([0 0],[-2.5 8],'color','k');
+title('Target Grand ERPs');
+xlabel('Time (ms)');
+ylabel('Voltage (uV)');
 
 %%
 % TESTING FOR DIFFERENCES
