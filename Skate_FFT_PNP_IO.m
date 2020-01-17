@@ -30,7 +30,7 @@ eeglab redraw
 electrode = 15; 
 
 wavenumber = 12; %wavelet cycles
-freqs = [1:1:30]; %wavelet frequencies
+freqs = [1:2:30]; %wavelet frequencies
 power_out = [];
 i_count = 0;
 n_electrode = EEG.nbchan;
