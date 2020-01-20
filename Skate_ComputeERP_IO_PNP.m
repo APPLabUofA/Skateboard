@@ -134,6 +134,44 @@ end
 %         ylabel('Voltage (uV)');
 %  end
 
+%Peak to find time window 
+
+figure
+boundedline(EEG.times,squeeze(mean(mean(erp_diff_out(:,electrode,:,:),4),3)),squeeze(std(0))./sqrt(nsubs),colour);
+ 
+    set(gca,'Color',[1 1 1]);
+    set(gca,'YDir','reverse');
+    axis tight; ylim([-6 12]);
+    line([-200 1000],[0 0],'color','k');
+    line([0 0],[-2.5 8],'color','k');
+    title('Difference Wave');
+    xlabel('Time (ms)');
+    ylabel('Voltage (uV)');
+
+
+
+%Topographies
+
+%difference topographies
+time_window = find(EEG.times>300,1)-1:find(EEG.times>500,1)-2;
+figure('Color',[1 1 1]);
+for i_cond = 1:nconds
+    subplot(1,nconds,i_cond);
+    set(gca,'Color',[1 1 1]);
+    temp = mean(mean(erp_diff_out(time_window,:,i_cond,:),4),1);
+    temp(16:18) = NaN;
+    topoplot(temp,'M:\Analysis\Skateboard\Skate_Vamp_Active_16.ced', 'whitebk','on','plotrad',.6,'maplimits',[-4 4])
+    title(conds_lab{i_cond});
+    t = colorbar('peer',gca);
+    set(get(t,'ylabel'),'String', 'Voltage Difference (uV)');
+    
+end
+
+%ttest to compare Target-Standard conditions
+time_window = find(EEG.times>350,1)-1:find(EEG.times>550,1)-2;
+for i_cond = 1:nconds
+[h p ci stat] = ttest(squeeze(mean(erp_out(time_window,1,electrode,i_cond,:),1)),squeeze(mean(erp_out(time_window,2,electrode,i_cond,:),1)),.01,'both',1) 
+end 
 
 %%
 %                   by preference
