@@ -3,13 +3,16 @@ close all
 ccc
 %%
 exp = 'Skateboard';
-subs = {'100' '101' '102' '103' '104' '106' '107' '108' '109' '110' '111'...
-    '112' '113' '114' '115' '116' '117' '118' '119' '120' '122' '123' '124' '125'...
-    '126' '127' '128' '129'};
-is_goofy = [0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1,...
-            0, 0, 0, 0, 0, 1, 1];
+subs = {'100'	'101'	'102'	'103'	'104'	'106'	'107'	'108'	'109'	'110'...
+    '111'	'112'	'113'	'114'	'115'	'116'	'117'	'119'	'120'...
+    '122'	'123'	'125'	'126'	'127'	'129'	'130'...
+    '131'	'132'	'133'	'134'	'135'	'136'	'137'};
+is_goofy = [0,	0,	0,	0,	0,	0,	1,	0,	1,	1,	0,	0,	1,	1,...
+    1,	0,	0,	0,	0,	1,	0,	0,	0,	0,	1,	0,	0,	0,	1,	1,    0,	1,	0];
 dif_trig = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,...
-            0, 1, 1, 1, 1, 1, 1];
+            1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
+       
+
 % 107 - Goofy
 % 109 - Goofy
 % 110 - Goofy
@@ -28,9 +31,9 @@ new_cond = {'P_In'; 'P_Out'; 'NP_In'; 'NP_Out'};
 nconds = length(conds);
 Pathname = 'M:\Data\Skateboard\winter2019\';
 
-if ~exist([Pathname 'segments\'])
-    mkdir([Pathname 'segments\']);
-end
+% if ~exist([Pathname 'segments\'])
+%     mkdir([Pathname 'segments\']);
+% end
 [ALLEEG EEG CURRENTSET ALLCOM] = eeglab;
 
 % Marker Numbers
@@ -212,12 +215,13 @@ for i_sub = 1:nsubs
     end
 end
 
+%%
 
-n_conditions = size(medianRT_correct,2)
+n_conditions = size(medianRT_correct,2);
 %this the grand mean over subjects of the median RTs
-grand_mean_RT_Corr = mean(medianRT_correct)
+grand_mean_RT_Corr = mean(medianRT_correct);
 %these are normal error bars (Standard Error)
-grand_SE_RT_Corr = std(medianRT_correct)/sqrt(nsubs)
+grand_SE_RT_Corr = std(medianRT_correct)/sqrt(nsubs);
 %these are smaller within subject error bars
 %made by subtracting away each subjects average
 %from their other scores to remove between subject difference
@@ -226,7 +230,7 @@ sub_mean_RT_Corr = mean(medianRT_correct,2); %average for each subject
 %repmat repeats the matrix 4 times for each condition
 mean_RT_Corr_deviation = medianRT_correct - repmat(sub_mean_RT_Corr,1,n_conditions);
 %then take the standard error of those deviatoins from the mean
-grand_withinSE_RT_Corr = std(mean_RT_Corr_deviation)/sqrt(nsubs)
+grand_withinSE_RT_Corr = std(mean_RT_Corr_deviation)/sqrt(nsubs);
 
 
 %now do the same for proportion correct
@@ -235,7 +239,7 @@ grand_SE_prop_corr = std(prop_correct)/sqrt(nsubs);
 sub_mean_prop_corr = mean(prop_correct,2);
 prop_corr_deviation = prop_correct - repmat(sub_mean_prop_corr,1,n_conditions);
 grand_withinSE_prop_corr = std(prop_corr_deviation)/sqrt(nsubs);
-
+%% original 4 conditions plus proportion correct
 %plot it
 conds_plot = {'Pref_FaceIn'; 'Pref_FaceOut';'NonPref_FaceIn'; 'NonPref_FaceOut'}; 
 figure;
@@ -246,63 +250,61 @@ barweb(grand_mean_RT_Corr,grand_withinSE_RT_Corr);
 ylim([450 525])
 ylabel('Median RT (ms)')
 title('Target Reaction Time (w/i subject SE)')
-legend(conds_plot)
+legend(conds)
 subplot(1,2,2)
 barweb(grand_mean_prop_corr,grand_withinSE_prop_corr);
 ylim([.9 1])
 ylabel('Proportion')
 title('Proportion of Targets responded to')
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%STATS for all 4 conditions 
+[p,tbl,stats] = anova1(medianRT_correct);
+%%
 %side by side plots - PREFERENCE on X Axis
-gran_meanRT_FaceIn = grand_mean_RT_Corr(1:2);
-grand_meanRT_FaceOut = grand_mean_RT_Corr(3:4);
-grand_wSE_RT_FaceIn = grand_withinSE_RT_Corr(1:2);
-grand_wSE_RT_FaceOut = grand_withinSE_RT_Corr(3:4);
+grand_meanRT_Pref = grand_mean_RT_Corr (1:2);
+grand_meanRT_NPref = grand_mean_RT_Corr(3:4);
+grand_wSE_RT_Pref = grand_withinSE_RT_Corr(1:2);
+grand_wSE_RT_NPref = grand_withinSE_RT_Corr(3:4);
 
 conds_plot = {'FacingIn'; 'FacingOut'}; 
 figure;
 set(gcf,'color','w');
 set(gcf, 'Position',  [100, 500, 1000, 400])
-subplot(2,2,1)
-barweb(gran_meanRT_FaceIn,grand_wSE_RT_FaceIn);
+subplot(1,2,1)
+barweb(grand_meanRT_Pref,grand_wSE_RT_Pref);
 ylim([450 525])
 ylabel('Median RT (ms)')
 xlabel ('Preferred Stance')
 title('Target Reaction Time (w/i subject SE)')
 legend(conds_plot)
-subplot(2,2,2)
+subplot(1,2,2)
 conds_plot = {'FacingIn'; 'FacingOut'}; 
-barweb(grand_meanRT_FaceOut,grand_wSE_RT_FaceOut);
+barweb(grand_meanRT_NPref,grand_wSE_RT_NPref);
 ylim([450 525])
 ylabel('Median RT (ms)')
 xlabel('Non-preferred Stance')
 title('Target Reaction Time (w/i subject SE)')
 legend(conds_plot)
-subplot(2,2,3)
-barweb(grand_mean_prop_corr(1:2),grand_withinSE_prop_corr(1:2));
-ylim([.9 1])
-ylabel('Proportion')
-xlabel ('Preferred Stance')
-title('Proportion of Targets responded to')
-subplot(2,2,4)
-barweb(grand_mean_prop_corr(3:4),grand_withinSE_prop_corr(3:4));
-ylim([.9 1])
-ylabel('Proportion')
-xlabel ('Non-preferred Stance')
-title('Proportion of Targets responded to')
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% STATS for PREFERRED by stance (facing in vs out)
+[h p ci stat] = ttest(medianRT_correct(:,1),medianRT_correct(:,2),.05,'both',1) 
+%Stats for non-preferred by stance
+[h p ci stat] = ttest(medianRT_correct(:,3),medianRT_correct(:,4),.05,'both',1) 
+%%
 %side by side plots - FACING on X Axis
-gran_meanRT_P_NP_IN = grand_mean_RT_Corr(1:2:3);
-gran_meanRT_P_NP_OUT = grand_mean_RT_Corr(2:2:4);
-grand_wSE_RT_P_NP_IN = grand_withinSE_RT_Corr(1:2:3);
-grand_wSE_RT_P_NP_OUT = grand_withinSE_RT_Corr(2:2:4);
+gran_meanRT_Face_IN = grand_mean_RT_Corr(1:2:3);
+gran_meanRT_Face_OUT = grand_mean_RT_Corr(2:2:4);
+grand_wSE_RT_Face_IN = grand_withinSE_RT_Corr(1:2:3);
+grand_wSE_RT_Face_OUT = grand_withinSE_RT_Corr(2:2:4);
 
 conds_plot = {'Preferred'; 'Non-Preferred'}; 
 figure;
 set(gcf,'color','w');
 set(gcf, 'Position',  [100, 500, 1000, 400])
 subplot(1,2,1)
-barweb(gran_meanRT_P_NP_IN,grand_wSE_RT_P_NP_IN);
+barweb(gran_meanRT_Face_IN,grand_wSE_RT_Face_IN);
 ylim([450 525])
 ylabel('Median RT (ms)')
 xlabel ('Facing In')
@@ -310,9 +312,73 @@ title('Target Reaction Time (w/i subject SE)')
 legend(conds_plot)
 subplot(1,2,2)
 conds_plot = {'Preferred'; 'Non-Preferred'}; 
-barweb(gran_meanRT_P_NP_OUT,grand_wSE_RT_P_NP_OUT);
+barweb(gran_meanRT_Face_OUT,grand_wSE_RT_Face_OUT);
 ylim([450 525])
 ylabel('Median RT (ms)')
 xlabel ('Facing Out')
 title('Target Reaction Time (w/i subject SE)')
 legend(conds_plot)
+
+%%%%%%%%%%%%%%%%
+%Stats for facing inside (pref vs non-pref)
+[h p ci stat] = ttest (medianRT_correct(:,1),medianRT_correct(:,3),.05,'both',1) 
+
+
+%Stats for facing inside (pref vs non-pref)
+[h p ci stat] = ttest(medianRT_correct(:,2),medianRT_correct(:,4),.05,'both',1) 
+
+
+%% 
+% GLOBAL STANCE 
+%% global stance!!!!!!!!!!!!!!!!!!
+%making a global comparison of preferred vs non-preferred 
+global_meanRT_Pref = mean (grand_mean_RT_Corr(1:2));
+global_meanRT_NPref = mean(grand_mean_RT_Corr(3:4));
+global_mean_PNP = [global_meanRT_Pref; global_meanRT_NPref];
+
+SE_P = nanstd(mean(medianRT_correct(:,1:2),2))/sqrt(nsubs); 
+SE_NP = nanstd(mean(medianRT_correct(:,3:4),2))/sqrt(nsubs);
+
+global_SE_PNP = [SE_P; SE_NP];
+
+
+%ENSURE THAT WITHIN STANDARD ERROR WAS CALCULATED PROPERLY
+figure;
+conds_plot = {'Preferred Stance'; 'Non-Preferred Stance'}; 
+set(gcf,'color','w');
+set(gcf, 'Position',  [100, 500, 1000, 400])
+barweb(global_mean_PNP,global_SE_PNP);
+ylim([450 535])
+ylabel('Median RT (ms)')
+xlabel ('Stance')
+title('Target RT by Overall Preference')
+legend(conds_plot)
+
+%t-test
+[h p ci stat] = ttest(mean(medianRT_correct(:,1:2),2),mean(medianRT_correct(:,3:4),2),.05,'both',1) 
+
+
+%GLOBAL FACING ORIENTATION
+global_meanRT_Face_IN = mean(grand_mean_RT_Corr(1:2:3));
+global_meanRT_Face_OUT = mean(grand_mean_RT_Corr(2:2:4));
+global_mean_IO = [global_meanRT_Face_IN; global_meanRT_Face_OUT];
+
+SE_IN = nanstd(mean(medianRT_correct(:,1:2:3),2)/sqrt(nsubs)); 
+SE_OUT = nanstd(mean(medianRT_correct(:,2:2:4),2)/sqrt(nsubs));
+% global_wSE_ACC_Pref = mean (grand_withinSE_ACC_Corr(1:2));
+% global_wSE_ACC_NPref = mean (grand_withinSE_ACC_Corr(3:4));
+global_SE_IO = [SE_IN; SE_OUT];
+
+%ENSURE THAT WITHIN STANDARD ERROR WAS CALCULATED PROPERLY
+figure;
+conds_plot = {'Facing In'; 'Facing Out'}; 
+set(gcf,'color','w');
+set(gcf, 'Position',  [100, 500, 1000, 400])
+barweb(global_mean_IO,global_SE_IO);
+ylim([450 535])
+ylabel('Median RT (ms)')
+xlabel ('Facing Orientation')
+title('Target RT by Overall Facing Orientation')
+legend(conds_plot)
+
+[h p ci stat] = ttest(mean(medianRT_correct(:,1:2:3),2),mean(medianRT_correct(:,2:2:4),2),.05,'both',1) 

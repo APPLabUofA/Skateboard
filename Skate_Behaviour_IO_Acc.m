@@ -3,13 +3,14 @@ close all
 ccc
 %%
 exp = 'Skateboard';
-subs = {'100' '101' '102' '103' '104' '106' '107' '108' '109' '110' '111'...
-    '112' '113' '114' '115' '116' '117' '118' '119' '120' '122' '123' '124' '125'...
-    '126' '127' '128' '129'};
-is_goofy = [0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1,...
-            0, 0, 0, 0, 0, 1, 1];
+subs = {'100'	'101'	'102'	'103'	'104'	'106'	'107'	'108'	'109'	'110'...
+    '111'	'112'	'113'	'114'	'115'	'116'	'117'	'119'	'120'...
+    '122'	'123'	'125'	'126'	'127'	'129'	'130'...
+    '131'	'132'	'133'	'134'	'135'	'136'	'137'};
+is_goofy = [0,	0,	0,	0,	0,	0,	1,	0,	1,	1,	0,	0,	1,	1,...
+    1,	0,	0,	0,	0,	1,	0,	0,	0,	0,	1,	0,	0,	0,	1,	1,    0,	1,	0];
 dif_trig = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,...
-            0, 1, 1, 1, 1, 1, 1];
+            0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
 
 %%
 nsubs = length(subs);
@@ -34,8 +35,8 @@ nCorrectResponse = 9;
 prop_correct = zeros(nsubs,length(new_cond));
 prop_correctRej = zeros(nsubs,length(new_cond));
 medianACC_correct = zeros(nsubs,length(new_cond));
-% medianRT_correct = zeros(nsubs,length(new_cond));
-% medianRT_falseAlarm = zeros(nsubs,length(new_cond));
+medianRT_correct = zeros(nsubs,length(new_cond));
+medianRT_falseAlarm = zeros(nsubs,length(new_cond));
 %%
 for i_sub = 1:nsubs
     for i_cond = 1:nconds
@@ -203,11 +204,12 @@ for i_sub = 1:nsubs
     end
 end
 
-n_conditions = size(medianACC_correct,2)
+%%
+n_conditions = size(medianACC_correct,2);
 %this the grand mean over subjects of the median RTs
-grand_mean_ACC_Corr = mean(medianACC_correct)
+grand_mean_ACC_Corr = mean(medianACC_correct);
 %these are normal error bars (Standard Error)
-grand_SE_ACC_Corr = std(medianACC_correct)/sqrt(nsubs)
+grand_SE_ACC_Corr = std(medianACC_correct)/sqrt(nsubs);
 %these are smaller within subject error bars
 %made by subtracting away each subjects average
 %from their other scores to remove between subject difference
@@ -215,35 +217,45 @@ sub_mean_ACC_Corr = mean(medianACC_correct,2); %average for each subject
 %this subtracts each subjects average from their scores
 %repmat repeats the matrix 4 times for each condition
 mean_ACC_Corr_deviation = medianACC_correct - repmat(sub_mean_ACC_Corr,1,n_conditions);
+
+%calculating standard errors for plots
+SE_P = nanstd(mean(medianACC_correct(:,1:2),2))/sqrt(nsubs); 
+SE_NP = nanstd(mean(medianACC_correct(:,3:4),2))/sqrt(nsubs);
+
 %then take the standard error of those deviatoins from the mean
-grand_withinSE_ACC_Corr = std(mean_ACC_Corr_deviation)/sqrt(nsubs)
+grand_withinSE_ACC_Corr = std(mean_ACC_Corr_deviation)/sqrt(nsubs);
 
 %now do the same for proportion correct
-grand_mean_prop_corr = mean(prop_correct);
-grand_SE_prop_corr = std(prop_correct)/sqrt(nsubs);
-sub_mean_prop_corr = mean(prop_correct,2);
+grand_mean_prop_corr = nanmean(prop_correct);
+grand_SE_prop_corr = nanstd(prop_correct)/sqrt(nsubs);
+sub_mean_prop_corr = nanmean(prop_correct,2);
 prop_corr_deviation = prop_correct - repmat(sub_mean_prop_corr,1,n_conditions);
-grand_withinSE_prop_corr = std(prop_corr_deviation)/sqrt(nsubs);
+grand_withinSE_prop_corr = nanstd(prop_corr_deviation)/sqrt(nsubs);
 
-%%
+%% original 4 conditions plus proportion correct
 % %plot it
-% conds_plot = {'P_FaceIn'; 'P_FaceOut';'NP_FaceIn'; 'NP_FaceOut'}; 
-% figure;
-% set(gcf,'color','w');
-% set(gcf, 'Position',  [100, 500, 1000, 400])
-% subplot(1,2,1)
-% barweb(grand_mean_ACC_Corr,grand_withinSE_ACC_Corr);
-% ylim([50 110])
-% ylabel('Median RT (ms)')
-% title('Target Accuracy')
-% legend(conds_plot)
-% subplot(1,2,2)
-% barweb(grand_mean_prop_corr,grand_withinSE_prop_corr);
-% ylim([.9 1])
-% ylabel('Proportion')
-% title('Proportion of Targets responded to')
+conds_plot = {'P_FaceIn'; 'P_FaceOut';'NP_FaceIn'; 'NP_FaceOut'}; 
+figure;
+subplot (1,2,1)
+set(gcf,'color','w');
+set(gcf, 'Position',  [100, 500, 1000, 400])
+barweb(grand_mean_ACC_Corr,grand_withinSE_ACC_Corr);
+ylim([50 110])
+ylabel('Mean Accuracy')
+title('Target Accuracy')
+legend(conds)
+subplot(1,2,2)
+barweb(grand_mean_prop_corr,grand_withinSE_prop_corr);
+ylim([.9 1])
+ylabel('Proportion')
+title('Proportion of Targets responded to')
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%STATS for all 4 conditions 
+[p,tbl,stats] = anova1(medianACC_correct);
 
 %%       
+
 %side by side plots - PREFERENCE on X Axis
 grand_meanACC_Pref = grand_mean_ACC_Corr(1:2);
 grand_meanACC_NPref = grand_mean_ACC_Corr(3:4);
@@ -263,7 +275,7 @@ set(gcf,'color','w');
 set(gcf, 'Position',  [100, 500, 1000, 400])
 subplot(1,2,1)
 barweb(grand_meanACC_Pref,grand_wSE_ACC_Pref);
-ylim([90 100])
+ylim([80 100])
 ylabel('Accuracy %')
 xlabel ('Preferred')
 title('Target Accuracy By Stance')
@@ -271,23 +283,17 @@ legend(conds_plot)
 subplot(1,2,2)
 conds_plot = {'Facing In'; 'Facing Out'}; 
 barweb(grand_meanACC_NPref,grand_wSE_ACC_NPref);
-ylim([90 100])
+ylim([80 100])
 ylabel('Accuracy %')
 xlabel('Non-preferred')
 title('Target Accuracy By Stance')
 legend(conds_plot)
-% subplot(2,2,3)
-% barweb(grand_mean_prop_corr(1:2),grand_withinSE_prop_corr(1:2));
-% ylim([.9 1])
-% ylabel('Proportion')
-% xlabel ('Preferred Stance')
-% title('Proportion of Targets responded to')
-% subplot(2,2,4)
-% barweb(grand_mean_prop_corr(3:4),grand_withinSE_prop_corr(3:4));
-% ylim([.9 1])
-% ylabel('Proportion')
-% xlabel ('Non-preferred Stance')
-% title('Proportion of Targets responded to')
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% STATS for PREFERRED by stance
+[h p ci stat] = ttest(medianACC_correct(:,1),medianACC_correct(:,2),.05,'both',1) 
+%Stats for non-preferred by stance
+[h p ci stat] = ttest(medianACC_correct(:,3),medianACC_correct(:,4),.05,'both',1) 
 
 
 %side by side plots - FACING on X Axis
@@ -297,7 +303,7 @@ set(gcf,'color','w');
 set(gcf, 'Position',  [100, 500, 1000, 400])
 subplot(1,2,1)
 barweb(gran_meanACC_Face_IN,grand_wSE_ACC_Face_IN);
-ylim([90 100])
+ylim([80 100])
 ylabel('Accuracy %')
 xlabel ('Facing In')
 title('Target Accuracy By Face Orientation')
@@ -305,10 +311,72 @@ legend(conds_plot)
 subplot(1,2,2)
 conds_plot = {'Preferred Stance'; 'Non-Preferred Stance'}; 
 barweb(gran_meanACC_Face_OUT,grand_wSE_ACC_Face_OUT);
-ylim([90 100])
+ylim([80 100])
 ylabel('Accuracy %')
 xlabel ('Facing Out')
 title('Target Accuracy By Face Orientation')
 legend(conds_plot)
 
+%Stats for facing inside (pref vs non-pref)
+[h p ci stat] = ttest (medianACC_correct(:,1),medianACC_correct(:,3),.05,'both',1) 
+
+gran_meanACC_Face_OUT = grand_mean_ACC_Corr(2:2:4);
+%Stats for facing inside (pref vs non-pref)
+[h p ci stat] = ttest(medianACC_correct(:,2),medianACC_correct(:,4),.05,'both',1) 
+
+
+%% global stance!!!!!!!!!!!!!!!!!!
+%making a global comparison of preferred vs non-preferred 
+global_meanACC_Pref = mean (grand_mean_ACC_Corr(1:2));
+global_meanACC_NPref = mean(grand_mean_ACC_Corr(3:4));
+global_mean_PNP = [global_meanACC_Pref; global_meanACC_NPref];
+
+%standard errors
+SE_P = nanstd(mean(medianACC_correct(:,1:2),2))/sqrt(nsubs); 
+SE_NP = nanstd(mean(medianACC_correct(:,3:4),2))/sqrt(nsubs);
+
+global_SE_PNP = [SE_P; SE_NP];
+
+%ENSURE THAT WITHIN STANDARD ERROR WAS CALCULATED PROPERLY
+figure;
+conds_plot = {'Preferred Stance'; 'Non-Preferred Stance'}; 
+set(gcf,'color','w');
+set(gcf, 'Position',  [100, 500, 1000, 400])
+barweb(global_mean_PNP,global_SE_PNP);
+ylim([80 100])
+ylabel('Accuracy %')
+xlabel ('Stance')
+title('Target Accuracy by Overall Preference')
+legend(conds_plot)
+
+%t-test
+[h p ci stat] = ttest(mean(medianACC_correct(:,1:2),2),mean(medianACC_correct(:,3:4),2),.05,'both',1) 
+
+
+
+%% 
+%GLOBAL FACING ORIENTATION
+global_meanACC_Face_IN = mean(grand_mean_ACC_Corr(1:2:3));
+global_meanACC_Face_OUT = mean(grand_mean_ACC_Corr(2:2:4));
+global_mean_IO = [global_meanACC_Face_IN; global_meanACC_Face_OUT];
+
+SE_IN = nanstd(mean(medianACC_correct(:,1:2:3),2)/sqrt(nsubs)); 
+SE_OUT = nanstd(mean(medianACC_correct(:,2:2:4),2)/sqrt(nsubs));
+% global_wSE_ACC_Pref = mean (grand_withinSE_ACC_Corr(1:2));
+% global_wSE_ACC_NPref = mean (grand_withinSE_ACC_Corr(3:4));
+global_SE_IO = [SE_IN; SE_OUT];
+
+%ENSURE THAT WITHIN STANDARD ERROR WAS CALCULATED PROPERLY
+figure;
+conds_plot = {'Facing In'; 'Facing Out'}; 
+set(gcf,'color','w');
+set(gcf, 'Position',  [100, 500, 1000, 400])
+barweb(global_mean_IO,global_SE_IO);
+ylim([80 100])
+ylabel('Accuracy %')
+xlabel ('Facing Orientation')
+title('Target Accuracy by Overall Facing Orientation')
+legend(conds_plot)
+
+[h p ci stat] = ttest(mean(medianACC_correct(:,1:2:3),2),mean(medianACC_correct(:,2:2:4),2),.05,'both',1)
 
