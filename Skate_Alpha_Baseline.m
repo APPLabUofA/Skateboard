@@ -22,7 +22,7 @@ nsubs = length(subs);
 conds = {'alpha_C';'alpha_O'};%preferred, clockwise - non-preffered, CCW
 nconds = length(conds);
 
-F = 0.5:2:30;
+F = 0.1:.5:30;
 wavenum = 12;
 
 Pathname = 'M:\Data\Skateboard\winter2019\';
@@ -53,8 +53,8 @@ for i_sub = 1:nsubs
         %%run each electrode through BOSC%%%
         srate = EEG.srate;
         for i_chan = 15
-            [bosc_spectra(:,:,i_sub,i_chan,i_cond)] = log(BOSC_tf(EEG.data(i_chan,1:180*srate),F,srate,wavenum));
-%             [bosc_spectra(:,i_sub,i_chan,i_cond)] = mean(log(BOSC_tf(EEG.data(i_chan,1:180*srate),F,srate,wavenum)),2);
+           % [bosc_spectra(:,:,i_sub,i_chan,i_cond)] = log(BOSC_tf(EEG.data(i_chan,1:180*srate),F,srate,wavenum));
+             [bosc_spectra(:,i_sub,i_chan,i_cond)] = mean(log(BOSC_tf(EEG.data(i_chan,1:180*srate),F,srate,wavenum)),2);
 %             kyle said to get rid of time altogether and average to keep
 %             file smaller
 
@@ -68,8 +68,8 @@ end
 electrode = 15;
 figure;
 [hl,hr] = boundedline(...
-    F,squeeze(mean(mean(bosc_spectra(:,:,:,electrode,1),2),3)),std(mean(bosc_spectra(:,:,:,electrode,1),2),[],3)/sqrt(length(subs)),'r',...
-    F,squeeze(mean(mean(bosc_spectra(:,:,:,electrode,2),2),3)),std(mean(bosc_spectra(:,:,:,electrode,2),2),[],3)/sqrt(length(subs)),'b');
+    F,squeeze(mean(bosc_spectra(:,:,electrode,1),2)),std(bosc_spectra(:,:,electrode,1),[],2)/sqrt(length(subs)),'r',...
+    F,squeeze(mean(bosc_spectra(:,:,electrode,2),2)),std(bosc_spectra(:,:,electrode,2),[],2)/sqrt(length(subs)),'b');
 set(hl,'linewidth',3);
 set(gca,'FontSize',14,'FontWeight', 'bold','linewidth',3,'box','off','color','none','Layer','Top');
 legend({'Closed';'Open'});
